@@ -126,30 +126,33 @@ const config = {
     </aside>
   </div>
 
-  <!-- El trámite municipal, que mucha gente no sabe que va incluido -->
-  <div class="flex gap-4 border-t border-asfalto-100 bg-amarillo/15 px-7 py-6 dark:border-white/10 sm:px-9">
-    <svg
-      class="mt-0.5 h-6 w-6 shrink-0 text-amarillo-600 dark:text-amarillo"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      aria-hidden="true"
-    >
-      <path
-        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-        stroke-linecap="round"
-        stroke-linejoin="round"></path>
-      <path d="M14 2v6h6M9 15l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-    <div>
-      <h4 class="font-bold">El trámite municipal va incluido</h4>
-      <p class="mt-1 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
-        Toda obra en la vía pública necesita un expediente municipal y la aprobación del municipio
-        para poder certificarse. De ese trámite nos ocupamos nosotros y ya está contemplado en el
-        precio: el vecino no tiene que hacer la gestión ni pagarla aparte.
-      </p>
-    </div>
+  <!-- Las dos cosas que más pregunta la gente. Se editan en config/precios.ts -->
+  <div
+    class="grid gap-6 border-t border-asfalto-100 bg-amarillo/15 px-7 py-6 dark:border-white/10 sm:px-9 md:grid-cols-2"
+  >
+    {
+      precios.notasDestacadas.map((n) => (
+        <div class="flex gap-4">
+          <svg
+            class="mt-0.5 h-6 w-6 shrink-0 text-amarillo-600 dark:text-amarillo"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M9 12.5l2 2 4-4.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div>
+            <h4 class="font-bold">{n.titulo}</h4>
+            <p class="mt-1 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+              {n.texto}
+            </p>
+          </div>
+        </div>
+      ))
+    }
   </div>
 
   <div class="border-t border-asfalto-100 bg-asfalto-50 px-7 py-6 dark:border-white/10 dark:bg-asfalto-900 sm:px-9">

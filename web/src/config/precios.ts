@@ -67,10 +67,25 @@ export const precios = {
     },
   ],
 
+  // --- AVISOS DESTACADOS DEBAJO DE LA CALCULADORA ---
+  // Van resaltados en amarillo. Son las dos cosas que más pregunta la gente.
+  notasDestacadas: [
+    {
+      titulo: 'El trámite municipal va incluido',
+      texto:
+        'Toda obra en la vía pública necesita un expediente municipal y la aprobación del municipio para poder certificarse. De ese trámite nos ocupamos nosotros y ya está contemplado en el precio: el vecino no tiene que hacer la gestión ni pagarla aparte.',
+    },
+    {
+      titulo: 'Los servicios existentes no se tocan',
+      texto:
+        'Las conexiones de agua, gas, cloacas y electricidad que ya están funcionando quedan como están, la obra no las afecta. Si hace falta una conexión nueva, la gestiona el frentista por su cuenta y no entra en este cálculo.',
+    },
+  ],
+
   // --- LETRA CHICA QUE SE MUESTRA DEBAJO DEL RESULTADO ---
   aclaraciones: [
     'El valor es una estimación orientativa, no constituye presupuesto ni oferta.',
-    'No incluye IVA ni conexiones de servicios.',
+    'No incluye IVA.',
     'El precio final depende del ancho de calzada, el estado del suelo y el volumen de la obra.',
     'Las obras por cuadra se coordinan con el municipio y los frentistas.',
   ],
