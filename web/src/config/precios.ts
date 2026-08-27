@@ -87,7 +87,7 @@ export const precios = {
     'El valor es una estimación orientativa, no constituye presupuesto ni oferta.',
     'No incluye IVA.',
     'El precio final depende del ancho de calzada, el estado del suelo y el volumen de la obra.',
-    'Las obras por cuadra se coordinan con el municipio y los frentistas.',
+    'La obra mínima es una cuadra completa, con el acuerdo de todos los frentistas.',
   ],
 } as const;
 
