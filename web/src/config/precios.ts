@@ -71,14 +71,14 @@ export const precios = {
   // Van resaltados en amarillo. Son las dos cosas que más pregunta la gente.
   notasDestacadas: [
     {
-      titulo: 'El trámite municipal va incluido',
+      titulo: 'Trámite municipal incluido',
       texto:
-        'Toda obra en la vía pública necesita un expediente municipal y la aprobación del municipio para poder certificarse. De ese trámite nos ocupamos nosotros y ya está contemplado en el precio: el vecino no tiene que hacer la gestión ni pagarla aparte.',
+        'Toda obra en la vía pública requiere expediente y aprobación municipal para certificarse. La gestión está a cargo de la empresa e incluida en el precio.',
     },
     {
-      titulo: 'Los servicios existentes no se tocan',
+      titulo: 'Servicios existentes',
       texto:
-        'Las conexiones de agua, gas, cloacas y electricidad que ya están funcionando quedan como están, la obra no las afecta. Si hace falta una conexión nueva, la gestiona el frentista por su cuenta y no entra en este cálculo.',
+        'Las conexiones en servicio no se ven afectadas por la obra. Las conexiones nuevas las gestiona el frentista y no están incluidas.',
     },
   ],
 
