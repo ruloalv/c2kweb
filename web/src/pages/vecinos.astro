@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CalculadoraFrente from '../components/CalculadoraFrente.astro';
+import TituloSeccion from '../components/TituloSeccion.astro';
+import { empresa, wa } from '../config/empresa';
+
+const pasos = [
+  {
+    n: '01',
+    titulo: 'Calculás tu frente',
+    texto: 'Con los metros de frente de tu lote tenés una idea del orden de magnitud de la obra.',
+  },
+  {
+    n: '02',
+    titulo: 'Hablás con tus vecinos',
+    texto:
+      'El pavimento se hace por cuadra. Cuantos más frentistas se sumen, menor es el costo por metro.',
+  },
+  {
+    n: '03',
+    titulo: 'Presentan la iniciativa',
+    texto:
+      'Con el municipio se define el ancho de calzada, el desagüe y el sistema de pago. Nosotros preparamos el presupuesto formal.',
+  },
+  {
+    n: '04',
+    titulo: 'Ejecutamos la obra',
+    texto:
+      'Movimiento de suelos, base, calzada y cordón, con plazos acordados por escrito.',
+  },
+];
+
+const preguntas = [
+  {
+    p: '¿Por qué se calcula por metro de frente?',
+    r: 'Porque en las obras de pavimento urbano cada frentista aporta por la parte de calzada que da a su lote, que es media calzada de ancho por los metros de frente que tiene. Es el criterio que usan la mayoría de los municipios.',
+  },
+  {
+    p: '¿El precio que muestra la calculadora es un presupuesto?',
+    r: 'No. Es una estimación orientativa para que sepas el orden de magnitud antes de arrancar. El presupuesto real depende del ancho de calzada, del estado del suelo, de los desagües y de cuántas cuadras entran en la obra.',
+  },
+  {
+    p: '¿Por qué el valor cambia con el dólar?',
+    r: 'El asfalto, el cemento y el combustible siguen al tipo de cambio. Para que el estimado no quede viejo, guardamos el precio en su equivalente en dólares y lo reexpresamos con la cotización del día. Abajo del resultado siempre ves la fecha del precio base.',
+  },
+  {
+    p: '¿Se puede pavimentar una sola casa?',
+    r: 'No conviene: el equipo de pavimentación se traslada y se monta por cuadra. Lo habitual es juntar a los frentistas de la cuadra o de varias cuadras seguidas.',
+  },
+  {
+    p: '¿Trabajan con el municipio o directo con los vecinos?',
+    r: 'De las dos formas. Muchas obras se canalizan por ordenanza municipal de pavimento con contribución de mejoras, y otras las contrata directamente un grupo de vecinos o un consorcio.',
+  },
+];
+
+// Las mismas preguntas, en el formato que entiende Google.
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: preguntas.map((f) => ({
+    '@type': 'Question',
+    name: f.p,
+    acceptedAnswer: { '@type': 'Answer', text: f.r },
+  })),
+};
+---
+
+<BaseLayout
+  title="Calculadora de pavimento para vecinos — Carreteras 2000 S.A."
+  description="Calculá cuánto sale pavimentar el frente de tu casa. Estimación por metro de frente, media calzada, actualizada al tipo de cambio del día."
+  path="/vecinos"
+>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(faqSchema)} />
+
+  <!-- Encabezado -->
+  <section class="bg-asfalto-950 py-16 text-white sm:py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <nav class="text-sm text-asfalto-300" aria-label="Miga de pan">
+        <a href="/" class="enlace-toque hover:text-white">Inicio</a>
+        <span class="mx-2" aria-hidden="true">/</span>
+        <span class="text-white">Vecinos</span>
+      </nav>
+
+      <h1 class="titulo-seccion mt-6 max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
+        ¿Cuánto sale pavimentar<br />
+        <span class="text-amarillo">el frente de tu casa?</span>
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-asfalto-300">
+        Una cuenta rápida para que sepas de qué números estamos hablando antes de juntarte con
+        los vecinos de la cuadra. Sin dejar datos, sin registrarte.
+      </p>
+    </div>
+  </section>
+
+  <div class="h-2 franja-vial"></div>
+
+  <!-- Calculadora -->
+  <section class="bg-asfalto-50 py-16 dark:bg-asfalto-900 sm:py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <CalculadoraFrente />
+    </div>
+  </section>
+
+  <!-- Cómo sigue -->
+  <section class="bg-white py-20 dark:bg-asfalto-950 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <TituloSeccion
+        etiqueta="Paso a paso"
+        titulo="Cómo se hace el pavimento de una cuadra"
+        bajada="No es un trámite complicado, pero conviene saber el orden. Te acompañamos desde la primera consulta."
+      />
+
+      <ol class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          pasos.map((p) => (
+            <li class="revelar rounded-2xl border border-asfalto-100 bg-asfalto-50 p-7 dark:border-white/10 dark:bg-asfalto-800">
+              <span class="text-3xl font-extrabold text-amarillo">{p.n}</span>
+              <h3 class="mt-3 font-bold">{p.titulo}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Preguntas -->
+  <section class="bg-asfalto-50 py-20 dark:bg-asfalto-900 sm:py-24">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <TituloSeccion etiqueta="Dudas frecuentes" titulo="Preguntas de vecinos" centrado />
+
+      <div class="mt-12 divide-y divide-asfalto-100 dark:divide-white/10">
+        {
+          preguntas.map((f) => (
+            <details class="group py-5">
+              <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold marker:content-['']">
+                {f.p}
+                <span
+                  class="shrink-0 text-2xl leading-none text-rojo-500 transition group-open:rotate-45 dark:text-amarillo"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <p class="mt-3 leading-relaxed text-asfalto-600 dark:text-asfalto-300">{f.r}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Cierre -->
+  <section class="bg-asfalto-900 py-16 text-white sm:py-20">
+    <div class="mx-auto max-w-3xl px-4 text-center sm:px-6">
+      <h2 class="titulo-seccion text-3xl sm:text-4xl">¿Ya tenés a la cuadra de acuerdo?</h2>
+      <p class="mt-4 text-lg text-asfalto-300">
+        Escribinos con la dirección y los metros de frente de cada lote y armamos el presupuesto
+        formal para presentar en el municipio.
+      </p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <a
+          href={wa(empresa.whatsappPrincipal, 'Hola, somos vecinos y queremos pavimentar nuestra cuadra.')}
+          target="_blank"
+          rel="noopener"
+          class="rounded-lg bg-whatsapp px-7 py-4 font-bold text-asfalto-950 transition hover:bg-white"
+        >
+          Escribir por WhatsApp
+        </a>
+        <a
+          href={`mailto:${empresa.email}?subject=Consulta%20de%20vecinos%20-%20pavimento`}
+          class="rounded-lg border border-white/25 px-7 py-4 font-semibold transition hover:bg-white/10"
+        >
+          Mandar un mail
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

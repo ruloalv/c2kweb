@@ -1,0 +1,347 @@
+---
+import { precios, fechaLegible } from '../config/precios';
+import { empresa } from '../config/empresa';
+
+// Todo lo que necesita el navegador para calcular, en un solo objeto.
+const config = {
+  obras: precios.obras,
+  adicionales: precios.adicionales,
+  anchoMediaCalzada: precios.anchoMediaCalzada,
+  dolarReferencia: precios.dolarReferencia,
+  fuenteDolar: precios.fuenteDolar,
+  ajustarPorDolar: precios.ajustarPorDolar,
+  fecha: precios.fechaActualizacion,
+  fechaLegible: fechaLegible(),
+  vigenciaDias: precios.vigenciaDias,
+  whatsapp: empresa.whatsappPrincipal,
+};
+---
+
+<div
+  id="calculadora"
+  class="overflow-hidden rounded-3xl border border-asfalto-100 bg-white shadow-xl dark:border-white/10 dark:bg-asfalto-800"
+>
+  <div class="grid lg:grid-cols-5">
+    <!-- Columna de datos -->
+    <form class="p-7 sm:p-9 lg:col-span-3" id="calc-form" novalidate>
+      <h3 class="text-2xl font-bold">Calculá tu frente</h3>
+      <p class="mt-2 text-asfalto-600 dark:text-asfalto-300">
+        Poné los metros de frente de tu lote y elegí el tipo de calzada. El cálculo toma
+        <strong>media calzada ({precios.anchoMediaCalzada} m de ancho)</strong>, que es lo que le
+        corresponde al frentista de cada vereda.
+      </p>
+
+      <!-- Metros de frente -->
+      <div class="mt-8">
+        <label for="frente" class="block font-semibold">Metros de frente de tu lote</label>
+        <div class="mt-3 flex items-center gap-4">
+          <input
+            id="frente"
+            name="frente"
+            type="range"
+            min="4"
+            max="60"
+            step="0.5"
+            value="10"
+            class="flex-1"
+          />
+          <div class="flex items-center gap-1 rounded-lg border border-asfalto-100 px-3 py-2 dark:border-white/15">
+            <input
+              id="frente-num"
+              type="number"
+              min="1"
+              max="200"
+              step="0.5"
+              value="10"
+              inputmode="decimal"
+              class="w-16 bg-transparent text-right text-lg font-bold outline-none"
+              aria-label="Metros de frente"
+            />
+            <span class="text-asfalto-600 dark:text-asfalto-300">m</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Esquina -->
+      <div class="mt-6 rounded-xl bg-asfalto-50 p-4 dark:bg-asfalto-900">
+        <label class="flex cursor-pointer items-center gap-3 font-medium">
+          <input id="esquina" type="checkbox" class="h-5 w-5 rounded accent-rojo-500" />
+          Mi lote es esquina (tiene dos frentes)
+        </label>
+        <div id="esquina-campo" class="mt-4 hidden">
+          <label for="frente2" class="block text-sm font-semibold">Metros del segundo frente</label>
+          <input
+            id="frente2"
+            type="number"
+            min="1"
+            max="200"
+            step="0.5"
+            value="20"
+            inputmode="decimal"
+            class="mt-2 w-32 rounded-lg border border-asfalto-100 px-3 py-2 text-lg font-bold dark:border-white/15 dark:bg-asfalto-800"
+          />
+        </div>
+      </div>
+
+      <!-- Tipo de calzada -->
+      <fieldset class="mt-8">
+        <legend class="font-semibold">Tipo de calzada</legend>
+        <div id="obras-lista" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+      </fieldset>
+
+      <!-- Adicionales -->
+      <fieldset class="mt-8">
+        <legend class="font-semibold">Adicionales</legend>
+        <div id="adicionales-lista" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+      </fieldset>
+    </form>
+
+    <!-- Columna de resultado -->
+    <aside class="flex flex-col bg-asfalto-900 p-7 text-white sm:p-9 lg:col-span-2">
+      <p class="text-sm font-semibold uppercase tracking-widest text-amarillo">Estimado</p>
+
+      <p id="total" class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl" aria-live="polite">—</p>
+      <p id="por-metro" class="mt-2 text-sm text-asfalto-300"></p>
+
+      <ul id="desglose" class="mt-6 space-y-2 border-t border-white/10 pt-6 text-sm text-asfalto-300"></ul>
+
+      <div
+        id="aviso-vencido"
+        class="mt-6 hidden rounded-lg border border-amarillo/40 bg-amarillo/10 p-3 text-sm text-amarillo"
+      >
+        Estos valores tienen más de {precios.vigenciaDias} días. Consultanos el precio vigente antes de decidir.
+      </div>
+
+      <a
+        id="wa-cotizar"
+        href={`https://wa.me/${empresa.whatsappPrincipal}`}
+        target="_blank"
+        rel="noopener"
+        class="mt-6 rounded-lg bg-whatsapp px-5 py-4 text-center font-bold text-asfalto-950 transition hover:bg-white"
+      >
+        Pedir presupuesto con estos datos
+      </a>
+
+      <p id="referencia" class="mt-4 text-xs leading-relaxed text-asfalto-300"></p>
+    </aside>
+  </div>
+
+  <!-- El trámite municipal, que mucha gente no sabe que va incluido -->
+  <div class="flex gap-4 border-t border-asfalto-100 bg-amarillo/15 px-7 py-6 dark:border-white/10 sm:px-9">
+    <svg
+      class="mt-0.5 h-6 w-6 shrink-0 text-amarillo-600 dark:text-amarillo"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      aria-hidden="true"
+    >
+      <path
+        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+      <path d="M14 2v6h6M9 15l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <div>
+      <h4 class="font-bold">El trámite municipal va incluido</h4>
+      <p class="mt-1 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+        Toda obra en la vía pública necesita un expediente municipal y la aprobación del municipio
+        para poder certificarse. De ese trámite nos ocupamos nosotros y ya está contemplado en el
+        precio: el vecino no tiene que hacer la gestión ni pagarla aparte.
+      </p>
+    </div>
+  </div>
+
+  <div class="border-t border-asfalto-100 bg-asfalto-50 px-7 py-6 dark:border-white/10 dark:bg-asfalto-900 sm:px-9">
+    <h4 class="text-sm font-bold uppercase tracking-wider text-asfalto-600 dark:text-asfalto-300">
+      Tener en cuenta
+    </h4>
+    <ul class="mt-3 grid gap-2 text-sm text-asfalto-600 dark:text-asfalto-300 sm:grid-cols-2">
+      {
+        precios.aclaraciones.map((a) => (
+          <li class="flex gap-2">
+            <span aria-hidden="true">·</span>
+            {a}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<script is:inline define:vars={{ config }}>
+  (function () {
+    const $ = (id) => document.getElementById(id);
+    const money = new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      maximumFractionDigits: 0,
+    });
+
+    // Factor de actualización por dólar. Arranca en 1 (el precio del día que se
+    // cargó) y se corrige si la API del dólar responde.
+    let factor = 1;
+    let dolarHoy = null;
+
+    // --- Pintar opciones ---
+    const listaObras = $('obras-lista');
+    config.obras.forEach((o, i) => {
+      listaObras.insertAdjacentHTML(
+        'beforeend',
+        '<label class="flex cursor-pointer gap-3 rounded-xl border border-asfalto-100 p-4 transition has-[:checked]:border-rojo-500 has-[:checked]:bg-rojo-500/5 dark:border-white/15">' +
+          '<input type="radio" name="obra" value="' +
+          o.id +
+          '" class="mt-1 h-4 w-4 accent-rojo-500"' +
+          (i === 0 ? ' checked' : '') +
+          ' />' +
+          '<span><span class="block font-semibold">' +
+          o.nombre +
+          '</span><span class="mt-1 block text-sm text-asfalto-600 dark:text-asfalto-300">' +
+          o.detalle +
+          '</span></span></label>'
+      );
+    });
+
+    const listaAdic = $('adicionales-lista');
+    config.adicionales.forEach((a) => {
+      listaAdic.insertAdjacentHTML(
+        'beforeend',
+        '<label class="flex cursor-pointer gap-3 rounded-xl border border-asfalto-100 p-4 transition has-[:checked]:border-rojo-500 has-[:checked]:bg-rojo-500/5 dark:border-white/15">' +
+          '<input type="checkbox" name="adicional" value="' +
+          a.id +
+          '" class="mt-1 h-4 w-4 rounded accent-rojo-500" />' +
+          '<span><span class="block font-semibold">' +
+          a.nombre +
+          '</span><span class="mt-1 block text-sm text-asfalto-600 dark:text-asfalto-300">' +
+          a.detalle +
+          '</span></span></label>'
+      );
+    });
+
+    // --- Sincronizar la barra con el número ---
+    const rango = $('frente');
+    const numero = $('frente-num');
+    rango.addEventListener('input', () => {
+      numero.value = rango.value;
+      calcular();
+    });
+    numero.addEventListener('input', () => {
+      const v = parseFloat(numero.value);
+      if (!isNaN(v)) rango.value = String(Math.min(60, Math.max(4, v)));
+      calcular();
+    });
+
+    const esquina = $('esquina');
+    esquina.addEventListener('change', () => {
+      $('esquina-campo').classList.toggle('hidden', !esquina.checked);
+      calcular();
+    });
+
+    $('calc-form').addEventListener('change', calcular);
+    $('calc-form').addEventListener('submit', (e) => e.preventDefault());
+
+    // --- Cálculo ---
+    function metros() {
+      const a = parseFloat(numero.value) || 0;
+      const b = esquina.checked ? parseFloat($('frente2').value) || 0 : 0;
+      return Math.max(0, a) + Math.max(0, b);
+    }
+
+    // Se redondea a mil para que quede claro que es una estimación.
+    const redondear = (n) => Math.round(n / 1000) * 1000;
+
+    function calcular() {
+      const m = metros();
+      const seleccion = document.querySelector('input[name="obra"]:checked');
+      const obra = seleccion ? config.obras.find((o) => o.id === seleccion.value) : null;
+      const elegidos = Array.from(document.querySelectorAll('input[name="adicional"]:checked')).map((i) =>
+        config.adicionales.find((a) => a.id === i.value)
+      );
+
+      if (!obra || m <= 0) {
+        $('total').textContent = '—';
+        $('desglose').innerHTML = '';
+        $('por-metro').textContent = 'Cargá los metros de frente';
+        return;
+      }
+
+      const filas = [];
+      let total = 0;
+
+      // La calzada se cobra por m²: metros de frente por el ancho de media calzada.
+      const superficie = m * config.anchoMediaCalzada;
+      const precioObra = obra.precioM2 * factor * config.anchoMediaCalzada;
+      total += precioObra * m;
+      filas.push([
+        obra.nombre + ' · ' + superficie.toLocaleString('es-AR') + ' m²',
+        precioObra * m,
+      ]);
+
+      for (const ad of elegidos) {
+        const p = ad.precioPorMetroFrente * factor;
+        total += p * m;
+        filas.push([ad.nombre + ' · ' + m.toLocaleString('es-AR') + ' m', p * m]);
+      }
+
+      total = redondear(total);
+
+      $('total').textContent = money.format(total);
+      $('por-metro').textContent = money.format(redondear(total / m)) + ' por metro de frente';
+      $('desglose').innerHTML = filas
+        .map(
+          (f) =>
+            '<li class="flex justify-between gap-4"><span>' +
+            f[0] +
+            '</span><span class="shrink-0 font-semibold text-white">' +
+            money.format(redondear(f[1])) +
+            '</span></li>'
+        )
+        .join('');
+
+      // Mensaje de WhatsApp con todo el detalle ya escrito.
+      const detalle = [
+        'Hola, hice el cálculo en la web y quiero un presupuesto.',
+        '',
+        'Frente: ' + m.toLocaleString('es-AR') + ' m' + (esquina.checked ? ' (lote en esquina)' : ''),
+        'Obra: ' + obra.nombre + ' — ' + superficie.toLocaleString('es-AR') + ' m² (media calzada)',
+        elegidos.length
+          ? 'Adicionales: ' + elegidos.map((a) => a.nombre).join(', ')
+          : 'Adicionales: ninguno',
+        'Estimado del sitio: ' + money.format(total),
+        '',
+        'Mi dirección es:',
+      ].join('\n');
+      $('wa-cotizar').href = 'https://wa.me/' + config.whatsapp + '?text=' + encodeURIComponent(detalle);
+
+      // Pie con la fecha del precio base y el dólar con el que se ajustó.
+      const base = 'Precios de referencia al ' + config.fechaLegible + '.';
+      $('referencia').textContent = dolarHoy
+        ? base + ' Actualizados con el dólar ' + config.fuenteDolar + ' de hoy ($' + dolarHoy.toLocaleString('es-AR') + ').'
+        : base + ' Valor sin ajustar por tipo de cambio.';
+    }
+
+    // --- Aviso cuando los precios quedaron viejos ---
+    const dias = Math.floor((Date.now() - new Date(config.fecha + 'T00:00:00').getTime()) / 86400000);
+    if (dias > config.vigenciaDias) $('aviso-vencido').classList.remove('hidden');
+
+    // --- Dólar del día ---
+    async function traerDolar() {
+      if (!config.ajustarPorDolar) return;
+      try {
+        const r = await fetch('https://dolarapi.com/v1/dolares/' + config.fuenteDolar, { cache: 'no-store' });
+        if (!r.ok) return;
+        const d = await r.json();
+        const venta = Number(d.venta);
+        if (venta > 0 && config.dolarReferencia > 0) {
+          dolarHoy = venta;
+          factor = venta / config.dolarReferencia;
+        }
+      } catch (e) {
+        // Sin internet o API caída: queda el precio base con su fecha.
+      }
+    }
+
+    calcular();
+    traerDolar().then(calcular);
+  })();
+</script>

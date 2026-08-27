@@ -1,0 +1,191 @@
+@import 'tailwindcss';
+
+/*
+  Tipografías propias: viajan con el sitio, no se le pide nada a Google ni a
+  ningún servidor externo. Se declaran a mano y sólo con el juego latino, que
+  es el único que necesita un sitio en español.
+*/
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('@fontsource/barlow-condensed/files/barlow-condensed-latin-700-normal.woff2') format('woff2');
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Paleta tomada del logo: negro asfalto, rojo y amarillo vial */
+  --color-asfalto-950: #0b0d10;
+  --color-asfalto-900: #14171c;
+  --color-asfalto-800: #1e232a;
+  --color-asfalto-700: #2c333d;
+  --color-asfalto-600: #4d5663;
+  --color-asfalto-300: #c2c8d1;
+  --color-asfalto-100: #e7eaee;
+  --color-asfalto-50: #f5f6f8;
+
+  --color-rojo-500: #db0000;
+  --color-rojo-600: #b80000;
+  --color-rojo-700: #950000;
+
+  --color-amarillo: #ffcc00;
+  --color-amarillo-600: #a37f00;
+
+  /* Verde WhatsApp: el claro para fondos, el oscuro para texto sobre blanco */
+  --color-whatsapp: #25d366;
+  --color-whatsapp-700: #128c7e;
+
+  --font-sans: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Barlow Condensed', 'Inter Variable', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+  Títulos en condensada: es la tipografía de la señalización vial y le da
+  al sitio la personalidad que el texto solo no consigue.
+*/
+h1,
+h2,
+.titulo-seccion {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  line-height: 1.02;
+  text-transform: uppercase;
+}
+
+/* Línea amarilla de demarcación, como la de la calzada */
+.franja-vial {
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-amarillo) 0 2.5rem,
+    transparent 2.5rem 4.5rem
+  );
+}
+
+/*
+  Aparición suave al entrar en pantalla. Sólo se activa si hay JavaScript:
+  sin la clase `js` el contenido se ve siempre, aunque falle el script.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .js .revelar {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+  .js .revelar.visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Quien pidió menos movimiento no recibe transformaciones al pasar el mouse. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .group:hover .group-hover\:scale-105,
+  .hover\:scale-105:hover,
+  .hover\:-translate-y-1:hover {
+    transform: none !important;
+  }
+}
+
+/*
+  Barra deslizante de la calculadora. Se dibuja a mano para que el área de
+  toque llegue a 44 px y el tirador se pueda agarrar con el dedo en el celular.
+*/
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 2.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-asfalto-100);
+}
+input[type='range']::-moz-range-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-asfalto-100);
+}
+.dark input[type='range']::-webkit-slider-runnable-track {
+  background: var(--color-asfalto-700);
+}
+.dark input[type='range']::-moz-range-track {
+  background: var(--color-asfalto-700);
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: -0.625rem;
+  border-radius: 9999px;
+  background: var(--color-rojo-500);
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+}
+input[type='range']::-moz-range-thumb {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  background: var(--color-rojo-500);
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.35);
+}
+
+/* Enlaces sueltos dentro de texto: un poco más de área para el dedo */
+.enlace-toque {
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+
+/* Los logos de clientes se ven parejos: grises, y a color al pasar el mouse */
+.logo-cliente {
+  filter: grayscale(1) contrast(0.9);
+  opacity: 0.7;
+  transition:
+    filter 0.25s,
+    opacity 0.25s;
+}
+.logo-cliente:hover,
+a:focus-visible .logo-cliente {
+  filter: none;
+  opacity: 1;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-amarillo);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

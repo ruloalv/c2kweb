@@ -1,0 +1,58 @@
+---
+import { empresa } from '../config/empresa';
+---
+
+<footer class="border-t-2 border-amarillo bg-asfalto-950 text-asfalto-300">
+  <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
+    <div>
+      <img src="/imgs/logo/logow.svg" alt={empresa.nombre} width="200" height="58" class="h-11 w-auto" loading="lazy" />
+      <p class="mt-4 max-w-xs text-sm leading-relaxed">
+        Obras viales, mezclas asfálticas y hormigón elaborado desde {empresa.anioInicio}.
+      </p>
+      <ul class="mt-4 space-y-1 text-sm">
+        {
+          empresa.patentes.map((p) => (
+            <li>
+              {p.producto}® — patente acta {p.acta}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    {
+      empresa.sedes.map((s) => (
+        <div>
+          <p class="text-sm font-bold uppercase tracking-wider text-amarillo">{s.ciudad}</p>
+          <address class="mt-3 space-y-1 text-sm not-italic">
+            <p>{s.direccion}</p>
+            <p>
+              <a href={`tel:${s.telefonoLink}`} class="enlace-toque hover:text-white">
+                Tel. {s.telefono}
+              </a>
+            </p>
+            <p>Cel. {s.celular}</p>
+            <p>
+              <a href={s.mapa} target="_blank" rel="noopener" class="enlace-toque underline underline-offset-4 hover:text-white">
+                Cómo llegar
+              </a>
+            </p>
+          </address>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <p>© {new Date().getFullYear()} {empresa.nombre} — Todos los derechos reservados.</p>
+      <a href={`mailto:${empresa.email}`} class="enlace-toque hover:text-white">{empresa.email}</a>
+    </div>
+    <div class="mx-auto max-w-7xl px-4 pb-6 text-xs text-asfalto-300 sm:px-6">
+      <p>
+        Diseño y desarrollo: {empresa.autorSitio.nombre} ({empresa.autorSitio.usuario}), asistido
+        por IA.
+      </p>
+    </div>
+  </div>
+</footer>

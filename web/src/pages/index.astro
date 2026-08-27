@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Empresa from '../components/Empresa.astro';
+import Productos from '../components/Productos.astro';
+import Obras from '../components/Obras.astro';
+import Clientes from '../components/Clientes.astro';
+import Contacto from '../components/Contacto.astro';
+import { empresa } from '../config/empresa';
+---
+
+<BaseLayout
+  title={`${empresa.nombre} — Pavimentos, asfalto y hormigón en Pigüé y Bahía Blanca`}
+  description="Obras viales, mezclas asfálticas en caliente y en frío (Rapibach y Rapirod), hormigón elaborado y movimiento de suelos, en Pigüé y Bahía Blanca."
+  path="/"
+>
+  <Hero />
+  <div class="h-2 franja-vial"></div>
+  <Empresa />
+  <Productos />
+  <Obras />
+
+  <!-- Puente hacia la calculadora para vecinos -->
+  <section class="bg-amarillo py-14 text-asfalto-950">
+    <div class="mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <p class="text-sm font-bold uppercase tracking-widest">Para vecinos</p>
+        <h2 class="titulo-seccion mt-2 text-3xl sm:text-4xl">
+          ¿Querés pavimentar tu cuadra?
+        </h2>
+        <p class="mt-3 text-lg">
+          Calculá en un minuto cuánto sale el pavimento frente a tu casa, según los metros de
+          frente de tu lote.
+        </p>
+      </div>
+      <a
+        href="/vecinos"
+        class="shrink-0 rounded-lg bg-asfalto-950 px-7 py-4 font-semibold text-white transition hover:bg-asfalto-800"
+      >
+        Ir a la calculadora
+      </a>
+    </div>
+  </section>
+
+  <Clientes />
+  <Contacto />
+</BaseLayout>

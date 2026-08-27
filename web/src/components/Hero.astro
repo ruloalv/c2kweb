@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import planta from '../assets/obras/planta.jpg';
+import { empresa, wa } from '../config/empresa';
+
+const anios = new Date().getFullYear() - empresa.anioInicio;
+
+const datos = [
+  { valor: `${anios}`, texto: 'años de trayectoria' },
+  { valor: '2', texto: 'plantas propias' },
+  { valor: '+20', texto: 'municipios y vialidades' },
+  { valor: '2', texto: 'productos patentados' },
+];
+---
+
+<section class="relative isolate overflow-hidden bg-asfalto-950 text-white">
+  <Image
+    src={planta}
+    alt="Planta de asfalto y hormigón de Carreteras 2000 en Pigüé"
+    widths={[640, 1024, 1600, 2048]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-10 h-full w-full object-cover"
+  />
+  <div class="absolute inset-0 -z-10 bg-gradient-to-r from-asfalto-950 via-asfalto-950/90 to-asfalto-950/40"></div>
+
+  <div class="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
+    <p class="flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-amarillo">
+      <span class="h-px w-8 bg-amarillo"></span>
+      Obra pública y privada desde {empresa.anioInicio}
+    </p>
+
+    <h1 class="titulo-seccion mt-6 max-w-3xl text-4xl sm:text-6xl lg:text-7xl">
+      Pavimentos que duran,<br />
+      <span class="text-amarillo">obras que se entregan.</span>
+    </h1>
+
+    <p class="mt-6 max-w-2xl text-lg leading-relaxed text-asfalto-300 sm:text-xl">
+      Mezclas asfálticas en caliente y en frío, hormigón elaborado de planta propia y
+      movimiento de suelos. Equipos y personal propio para responder en tiempo y con la
+      calidad que la obra exige.
+    </p>
+
+    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+      <a
+        href={wa(empresa.whatsappPrincipal, 'Hola, quiero pedir una cotización.')}
+        target="_blank"
+        rel="noopener"
+        class="rounded-lg bg-rojo-500 px-7 py-4 text-center text-base font-semibold shadow-lg shadow-rojo-700/30 transition hover:bg-rojo-600"
+      >
+        Pedir cotización
+      </a>
+      <a
+        href="#productos"
+        class="rounded-lg border border-white/25 bg-white/5 px-7 py-4 text-center text-base font-semibold backdrop-blur transition hover:bg-white/15"
+      >
+        Ver productos y servicios
+      </a>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10 bg-asfalto-950/70 backdrop-blur">
+    <dl class="mx-auto grid max-w-7xl grid-cols-2 gap-px px-4 sm:px-6 lg:grid-cols-4">
+      {
+        datos.map((d) => (
+          <div class="py-6 lg:py-8">
+            <dt class="text-2xl font-extrabold text-amarillo sm:text-3xl">{d.valor}</dt>
+            <dd class="mt-1 text-sm text-asfalto-300">{d.texto}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>

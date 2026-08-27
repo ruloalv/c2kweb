@@ -1,0 +1,13 @@
+LOGOS DE CLIENTES
+=================
+
+Un archivo por cliente. El nombre del archivo tiene que coincidir con el
+que figura en src/data/clientes.ts (columna "logo").
+
+Ideal: PNG o SVG con fondo transparente, mínimo 400 px de ancho.
+
+En el sitio se muestran en gris y toman color al pasar el mouse, así que
+conviene que sean logos limpios, sin recuadro ni fondo de color.
+
+Para agregar un cliente nuevo: dejás el archivo acá y sumás la línea
+correspondiente en src/data/clientes.ts.

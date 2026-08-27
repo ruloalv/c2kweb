@@ -1,0 +1,19 @@
+# Notas personales, fuera del repo
+NOTAS-RAUL.md
+
+# Dependencias y compilados
+node_modules/
+dist/
+.astro/
+
+# Editores y sistema
+.vscode/
+.idea/
+.idx/
+.DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+.env.*
+!.env.example

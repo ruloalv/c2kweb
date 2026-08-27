@@ -1,0 +1,53 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import { obras } from '../data/obras';
+import TituloSeccion from './TituloSeccion.astro';
+
+const archivos = import.meta.glob<{ default: ImageMetadata }>('../assets/obras/*.{png,jpg,jpeg,webp}', {
+  eager: true,
+});
+const foto = (nombre: string) => archivos[`../assets/obras/${nombre}`]?.default;
+---
+
+<section id="obras" class="bg-white py-20 dark:bg-asfalto-950 sm:py-28">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <TituloSeccion
+      etiqueta="Trabajos realizados"
+      titulo="Obras"
+      bajada="Cada obra se entrega con densidades y espesores verificados y la documentación técnica que pide el comitente."
+    />
+
+    <div class="mt-14 grid gap-6 md:grid-cols-3">
+      {
+        obras.map((o) => {
+          const img = foto(o.foto);
+          return (
+            <article class="revelar group overflow-hidden rounded-2xl border border-asfalto-100 bg-white shadow-sm transition hover:shadow-xl dark:border-white/10 dark:bg-asfalto-800">
+              <div class="relative aspect-[3/2] overflow-hidden bg-asfalto-800">
+                {img && (
+                  <Image
+                    src={img}
+                    alt={`${o.titulo} — ${o.lugar}`}
+                    widths={[300, 600]}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    loading="lazy"
+                    class="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                )}
+                <span class="absolute left-3 top-3 rounded-full bg-asfalto-950/85 px-3 py-1 text-xs font-bold uppercase tracking-wide text-amarillo backdrop-blur">
+                  {o.tipo}
+                </span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-lg font-bold">{o.titulo}</h3>
+                <p class="mt-1 text-sm font-medium text-rojo-500 dark:text-amarillo">{o.lugar}</p>
+                <p class="mt-3 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">{o.detalle}</p>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

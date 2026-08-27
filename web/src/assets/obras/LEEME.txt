@@ -1,0 +1,23 @@
+FOTOS DE OBRA
+=============
+
+Dejá acá las fotos, con estos nombres exactos, y pisá las que están:
+
+  planta.jpg              Foto grande de la planta. Se usa de fondo del
+                          encabezado y como imagen al compartir en redes.
+                          Mínimo 1600 px de ancho, apaisada.
+
+  obra-vial.png           Obra de pavimentación.
+  movimiento-suelos.png   Movimiento de suelos.
+  hormigon.png            Pavimento u obra de hormigón.
+                          Estas tres se muestran apaisadas (3:2).
+                          Mínimo 1200 x 800 px.
+
+Podés usar .jpg, .png o .webp. Si cambiás la extensión, avisá para
+ajustar el nombre en src/data/obras.ts.
+
+No hace falta comprimirlas ni achicarlas: Astro las convierte a webp y
+genera los tamaños para celular y escritorio en cada compilación.
+
+Después de reemplazar la foto de la planta, regenerá la imagen de redes:
+  node scripts/genera-og.mjs

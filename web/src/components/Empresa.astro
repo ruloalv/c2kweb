@@ -1,0 +1,69 @@
+---
+import TituloSeccion from './TituloSeccion.astro';
+import { empresa } from '../config/empresa';
+
+const pilares = [
+  {
+    titulo: 'Producción propia',
+    texto:
+      'Planta de asfalto y planta de hormigón. No dependemos de terceros para abastecer la obra ni para sostener un ritmo de entrega.',
+  },
+  {
+    titulo: 'Equipos y personal',
+    texto:
+      'Terminadoras, rodillos, motoniveladoras y camiones propios, con cuadrillas que trabajan siempre con la misma metodología.',
+  },
+  {
+    titulo: 'Control de calidad',
+    texto:
+      'Ensayos de mezcla, densidades y espesores documentados obra por obra, según lo exigen Vialidad y los pliegos municipales.',
+  },
+  {
+    titulo: 'Seguridad e higiene',
+    texto:
+      'Obras señalizadas, personal capacitado y cumplimiento de la normativa laboral en cada frente de trabajo.',
+  },
+];
+---
+
+<section id="empresa" class="bg-white py-20 dark:bg-asfalto-950 sm:py-28">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <div class="grid gap-14 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <TituloSeccion
+          etiqueta="La empresa"
+          titulo="Arriba de la ruta desde 2001"
+        />
+        <div class="mt-6 space-y-4 text-lg leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+          <p>
+            <strong class="text-asfalto-900 dark:text-white">{empresa.nombre}</strong> construye y
+            conserva pavimentos en todo el país. Trabajamos para Vialidad Nacional, vialidades
+            provinciales, municipios y empresas constructoras, en obras que van desde el bacheo
+            urbano hasta la pavimentación completa de rutas y playas industriales.
+          </p>
+          <p>
+            Fabricamos <strong class="text-asfalto-900 dark:text-white">Rapibach®</strong> y
+            <strong class="text-asfalto-900 dark:text-white">Rapirod®</strong>, reparadores
+            instantáneos de pavimento de patente propia, que se aplican en frío, sin equipo
+            especial, y que se despachan envasados a todo el país.
+          </p>
+          <p>
+            Nuestras bases están en Pigüé y Bahía Blanca, y desde ahí atendemos el sudoeste
+            bonaerense, La Pampa, Río Negro, Neuquén y Chubut.
+          </p>
+        </div>
+      </div>
+
+      <ul class="grid gap-5 sm:grid-cols-2">
+        {
+          pilares.map((p) => (
+            <li class="revelar rounded-2xl border-l-4 border-amarillo bg-asfalto-50 p-6 dark:bg-asfalto-800">
+              <h3 class="font-bold">{p.titulo}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">{p.texto}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

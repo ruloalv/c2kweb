@@ -1,0 +1,23 @@
+---
+interface Props {
+  etiqueta: string;
+  titulo: string;
+  bajada?: string;
+  centrado?: boolean;
+}
+const { etiqueta, titulo, bajada, centrado = false } = Astro.props;
+---
+
+<div class={centrado ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
+  <p
+    class:list={[
+      'flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-rojo-500 dark:text-amarillo',
+      centrado && 'justify-center',
+    ]}
+  >
+    <span class="h-px w-8 bg-current"></span>
+    {etiqueta}
+  </p>
+  <h2 class="titulo-seccion mt-4 text-3xl sm:text-4xl lg:text-5xl">{titulo}</h2>
+  {bajada && <p class="mt-4 text-lg leading-relaxed text-asfalto-600 dark:text-asfalto-300">{bajada}</p>}
+</div>
