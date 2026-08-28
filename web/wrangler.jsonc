@@ -6,10 +6,30 @@
   // que las rutas de acá son relativas a esta carpeta.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "c2kweb",
-  "compatibility_date": "2026-08-28",
+  "compatibility_date": "2026-05-01",
+
+  // El Worker sirve los archivos de dist/ y agrega negociación de contenido:
+  // si un agente acepta text/markdown, recibe la versión en markdown.
+  "main": "./worker/index.js",
 
   "assets": {
     "directory": "./dist",
+
+    // Deja que el Worker acceda a los archivos con env.ASSETS.fetch()
+    "binding": "ASSETS",
+
+    // Por defecto Cloudflare sirve el archivo y ni siquiera ejecuta el Worker.
+    // Las páginas tienen que pasar por el código, que es donde se decide entre
+    // HTML y markdown, y también las rutas inexistentes, para poder contestar
+    // el 404 en markdown. Se excluyen las carpetas de estáticos, que se sirven
+    // directo y sin costo.
+    "run_worker_first": [
+      "/*",
+      "!/_astro/*",
+      "!/imgs/*",
+      "!/favicon.svg",
+      "!/og.jpg"
+    ],
 
     // El sitio se compila con build.format 'file' (vecinos.html, no
     // vecinos/index.html). Con "drop-trailing-slash" la URL buena es /vecinos

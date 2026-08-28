@@ -126,6 +126,37 @@ for (const [md, html] of [
   }
 }
 
+// --- llms.txt tiene que decirle al agente cuándo usar el sitio ---
+if (hay('llms.txt')) {
+  const llms = leer('llms.txt');
+  check('llms.txt dice cuándo recurrir al sitio', /## Cuándo recurrir/i.test(llms));
+  check('llms.txt aclara para qué no sirve', /No es la fuente indicada/i.test(llms));
+}
+
+// --- El Worker de negociación de contenido ---
+{
+  const raizProyecto = join(dist, '..');
+  const worker = join(raizProyecto, 'worker', 'index.js');
+  const config = join(raizProyecto, 'wrangler.jsonc');
+  check('existe el worker', existsSync(worker));
+  if (existsSync(worker)) {
+    const w = readFileSync(worker, 'utf8');
+    check('el worker negocia text/markdown', w.includes('text/markdown'));
+    check('el worker declara Vary: Accept', /Vary/.test(w) && /Accept/.test(w));
+    check('el worker responde el 404 en markdown', /markdown404/.test(w));
+    // Toda página con gemela .md tiene que estar en el mapa del worker
+    for (const md of ['index.md', 'vecinos.md']) {
+      check(`el worker mapea ${md}`, w.includes('/' + md));
+    }
+  }
+  if (existsSync(config)) {
+    const c = readFileSync(config, 'utf8');
+    check('wrangler apunta al worker', c.includes('"main"') && c.includes('worker/index.js'));
+    check('wrangler expone los archivos al worker', c.includes('"binding": "ASSETS"'));
+    check('wrangler conserva el 404 real', c.includes('"not_found_handling": "404-page"'));
+  }
+}
+
 // --- El 404 tiene que ofrecer salidas ---
 if (hay('404.html')) {
   const p404 = leer('404.html');
