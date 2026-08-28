@@ -51,8 +51,13 @@ import { ruta } from '../config/rutas';
     </div>
     <div class="mx-auto max-w-7xl px-4 pb-6 text-xs text-asfalto-300 sm:px-6">
       <p>
-        Diseño y desarrollo: {empresa.autorSitio.nombre} ({empresa.autorSitio.usuario}), asistido
-        por IA.
+        Sitio por{' '}
+        <a
+          href={`mailto:${empresa.autorSitio.email}`}
+          class="enlace-toque hover:text-white"
+        >
+          {empresa.autorSitio.usuario}
+        </a>
       </p>
     </div>
   </div>

@@ -22,8 +22,8 @@ export const empresa = {
     { producto: 'Rapirod', acta: '3933732' },
   ],
 
-  // Diseño del sitio.
-  autorSitio: { nombre: 'Raúl Alvarado', usuario: '@ruloalv' },
+  // Crédito del sitio, al pie. Se muestra solo el usuario.
+  autorSitio: { usuario: '@ruloalv', email: 'ruloalv@gmail.com' },
 
   sedes: [
     {

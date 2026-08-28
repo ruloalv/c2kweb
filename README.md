@@ -98,4 +98,4 @@ quiere apagar, se borra `.github/workflows/deploy.yml`.
 
 ## Diseño
 
-Raúl Alvarado ([@ruloalv](https://github.com/ruloalv)), asistido por IA.
+[@ruloalv](https://github.com/ruloalv)
