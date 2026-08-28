@@ -1,0 +1,52 @@
+# Compila el sitio y lo publica en GitHub Pages en cada push a main.
+#
+# La vista previa queda en https://ruloalv.github.io/c2kweb
+# Para el dominio propio no hace falta este workflow: se compila con
+# `npm run build` dentro de web/ y se sube el contenido de web/dist/.
+
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si se pushea dos veces seguidas, deja terminar el deploy en curso.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Compilar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Traer el código
+        uses: actions/checkout@v4
+
+      - name: Compilar el sitio
+        uses: withastro/action@v3
+        with:
+          path: web # el proyecto Astro no está en la raíz del repo
+          node-version: 22
+        env:
+          # En Pages el sitio cuelga de un subdirectorio, no de la raíz.
+          SITE_URL: https://ruloalv.github.io
+          BASE_PATH: /c2kweb
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Desplegar
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { ruta } from '../config/rutas';
 ---
 
 <BaseLayout title="Página no encontrada — Carreteras 2000 S.A." path="/404">
@@ -11,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         Puede que el enlace esté viejo. Volvé al inicio o escribinos y te orientamos.
       </p>
       <a
-        href="/"
+        href={ruta('/')}
         class="mt-8 inline-block rounded-lg bg-rojo-500 px-7 py-4 font-semibold transition hover:bg-rojo-600"
       >
         Volver al inicio

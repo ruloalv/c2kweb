@@ -1,11 +1,12 @@
 ---
 import { empresa } from '../config/empresa';
+import { ruta } from '../config/rutas';
 ---
 
 <footer class="border-t-2 border-amarillo bg-asfalto-950 text-asfalto-300">
   <div class="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
     <div>
-      <img src="/imgs/logo/logow.svg" alt={empresa.nombre} width="200" height="58" class="h-11 w-auto" loading="lazy" />
+      <img src={ruta('/imgs/logo/logow.svg')} alt={empresa.nombre} width="200" height="58" class="h-11 w-auto" loading="lazy" />
       <p class="mt-4 max-w-xs text-sm leading-relaxed">
         Obras viales, mezclas asfálticas y hormigón elaborado desde {empresa.anioInicio}.
       </p>

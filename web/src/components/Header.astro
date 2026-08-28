@@ -1,21 +1,22 @@
 ---
 import { empresa } from '../config/empresa';
+import { ruta } from '../config/rutas';
 
 const links = [
-  { href: '/#empresa', texto: 'Empresa' },
-  { href: '/#productos', texto: 'Productos' },
-  { href: '/#obras', texto: 'Obras' },
-  { href: '/#clientes', texto: 'Clientes' },
-  { href: '/vecinos', texto: 'Vecinos' },
-  { href: '/#contacto', texto: 'Contacto' },
+  { href: ruta('/') + '#empresa', texto: 'Empresa' },
+  { href: ruta('/') + '#productos', texto: 'Productos' },
+  { href: ruta('/') + '#obras', texto: 'Obras' },
+  { href: ruta('/') + '#clientes', texto: 'Clientes' },
+  { href: ruta('/vecinos'), texto: 'Vecinos' },
+  { href: ruta('/') + '#contacto', texto: 'Contacto' },
 ];
 ---
 
 <header class="sticky top-0 z-50 border-b-2 border-amarillo bg-asfalto-950/95 text-white backdrop-blur">
   <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="/" class="flex shrink-0 items-center" aria-label={`${empresa.nombre} — inicio`}>
+    <a href={ruta('/')} class="flex shrink-0 items-center" aria-label={`${empresa.nombre} — inicio`}>
       <img
-        src="/imgs/logo/logow.svg"
+        src={ruta('/imgs/logo/logow.svg')}
         alt={empresa.nombre}
         width="180"
         height="52"

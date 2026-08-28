@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CalculadoraFrente from '../components/CalculadoraFrente.astro';
 import TituloSeccion from '../components/TituloSeccion.astro';
 import { empresa, wa } from '../config/empresa';
+import { ruta } from '../config/rutas';
 
 const pasos = [
   {
@@ -80,7 +81,7 @@ const faqSchema = {
   <section class="bg-asfalto-950 py-16 text-white sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
       <nav class="text-sm text-asfalto-300" aria-label="Miga de pan">
-        <a href="/" class="enlace-toque hover:text-white">Inicio</a>
+        <a href={ruta('/')} class="enlace-toque hover:text-white">Inicio</a>
         <span class="mx-2" aria-hidden="true">/</span>
         <span class="text-white">Vecinos</span>
       </nav>

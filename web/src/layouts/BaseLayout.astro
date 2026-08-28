@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { empresa } from '../config/empresa';
+import { ruta } from '../config/rutas';
 
 interface Props {
   title?: string;
@@ -17,8 +18,10 @@ const {
   path = '/',
 } = Astro.props;
 
-const canonical = new URL(path, empresa.sitio).href;
-const ogImage = new URL('/og.jpg', empresa.sitio).href;
+// Astro.site sale de astro.config.mjs y cambia según dónde se publique.
+const origen = Astro.site?.href ?? empresa.sitio;
+const canonical = new URL(ruta(path), origen).href;
+const ogImage = new URL(ruta('/og.jpg'), origen).href;
 
 // Datos estructurados para que Google entienda quiénes somos y dónde estamos.
 const schema = {
@@ -71,8 +74,8 @@ const schema = {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/imgs/logo/icono.png" />
+    <link rel="icon" href={ruta('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={ruta('/imgs/logo/icono.png')} />
 
     <script is:inline>
       // Se aplica el tema antes de pintar, para que no haya un parpadeo blanco.
