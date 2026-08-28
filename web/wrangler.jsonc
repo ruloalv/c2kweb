@@ -1,0 +1,24 @@
+{
+  // Configuración para publicar en Cloudflare Workers como sitio estático.
+  //
+  // No hay código de servidor: Cloudflare sirve directamente los archivos que
+  // Astro deja en dist/. El panel de Cloudflare usa "Root directory: web", así
+  // que las rutas de acá son relativas a esta carpeta.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "c2kweb",
+  "compatibility_date": "2026-08-28",
+
+  "assets": {
+    "directory": "./dist",
+
+    // El sitio se compila con build.format 'file' (vecinos.html, no
+    // vecinos/index.html). Con "drop-trailing-slash" la URL buena es /vecinos
+    // y /vecinos/ redirige hacia ella. Así los agentes que no siguen
+    // redirecciones llegan a la primera.
+    "html_handling": "drop-trailing-slash",
+
+    // Las rutas que no existen devuelven 404.html con estado HTTP 404 real,
+    // no un 200 con la página de inicio.
+    "not_found_handling": "404-page"
+  }
+}

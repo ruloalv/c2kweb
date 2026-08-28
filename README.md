@@ -41,51 +41,57 @@ espera el sitio.
 
 La documentación completa está en [`web/README.md`](web/README.md).
 
-## Publicar en Cloudflare Pages
+## Publicar en Cloudflare
 
 GitHub Pages sirve el sitio desde un subdirectorio (`/c2kweb`), y eso trae dos
 límites que no se arreglan con código: la raíz del dominio no es el sitio, y no
-se pueden definir cabeceras HTTP. Cloudflare Pages resuelve las dos cosas, es
-gratis y no pide tarjeta.
+se pueden definir cabeceras HTTP. Cloudflare resuelve las dos cosas, es gratis y
+no pide tarjeta.
 
-### Configuración
+Cloudflare está migrando Pages hacia Workers, así que un proyecto nuevo conectado
+a Git termina siendo un **Worker con archivos estáticos**. Sirve igual: no hay
+código de servidor, Cloudflare publica directamente lo que Astro deja en
+`dist/`, y lee el `_headers`.
 
-En [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** →
-**Create application** → pestaña **Pages** → **Connect to Git** → autorizar
-GitHub y elegir el repo `c2kweb`.
+La configuración vive en [`web/wrangler.jsonc`](web/wrangler.jsonc).
 
-Después, en la pantalla de build:
+### Campos en el panel de Cloudflare
 
 | Campo | Valor |
 | :--- | :--- |
-| Project name | `c2kweb` |
-| Production branch | `main` |
-| Framework preset | `Astro` |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
-| Root directory *(en Advanced)* | `web` |
+| Deploy command | `npx wrangler deploy` |
+| Version command | *(vacío)* |
+| Root directory | `web` |
+| Production branch | `main` |
 
-Y dos variables de entorno:
+Variables de entorno:
 
 | Variable | Valor |
 | :--- | :--- |
-| `SITE_URL` | `https://c2kweb.pages.dev` |
 | `NODE_VERSION` | `22` |
+| `SITE_URL` | la URL final del proyecto |
 
-`SITE_URL` es lo que hace que el canonical, el sitemap y el robots.txt apunten
-al dominio correcto. Si más adelante se conecta el dominio propio, se cambia
-ese valor por `https://www.carreteras2000.com.ar` y listo.
+`SITE_URL` define a dónde apuntan el canonical, el sitemap y el robots.txt. La
+URL de Workers se conoce recién después del primer deploy
+(`c2kweb.<subdominio>.workers.dev`), así que el orden es: desplegar, copiar la
+URL, cargarla como variable y volver a desplegar.
 
-**No hay que definir `BASE_PATH`**: sin esa variable el sitio se compila para
-la raíz del dominio, que es lo que corresponde acá.
+Cuando se conecte el dominio propio, se cambia esa variable por
+`https://www.carreteras2000.com.ar`.
 
-### Después del primer deploy
+**No hay que definir `BASE_PATH`**: sin esa variable el sitio se compila para la
+raíz del dominio, que es lo que corresponde acá.
 
-Queda en `https://c2kweb.pages.dev`. Cada push a `main` republica solo, igual
-que con GitHub Pages.
+### Qué resuelve el wrangler.jsonc
 
-El archivo `web/public/_headers` pasa a tener efecto: define `Vary: Accept` y
-el tipo de contenido de los `.md`.
+- `html_handling: drop-trailing-slash` — la URL buena es `/vecinos` y
+  `/vecinos/` redirige hacia ella. Los agentes que no siguen redirecciones
+  llegan a la primera.
+- `not_found_handling: 404-page` — las rutas inexistentes devuelven `404.html`
+  con estado HTTP 404 real, no un 200 con la página de inicio.
+
+### Sobre GitHub Pages
 
 El deploy de GitHub Pages puede quedar andando en paralelo sin problema. Si se
 quiere apagar, se borra `.github/workflows/deploy.yml`.
