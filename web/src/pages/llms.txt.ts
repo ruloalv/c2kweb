@@ -1,0 +1,75 @@
+import type { APIRoute } from 'astro';
+import { empresa } from '../config/empresa';
+import { productos } from '../data/productos';
+import { precios, fechaLegible } from '../config/precios';
+import { ruta } from '../config/rutas';
+
+/**
+ * llms.txt — resumen del sitio en markdown para modelos de lenguaje.
+ * Formato: https://llmstxt.org
+ *
+ * Sirve para que ChatGPT, Claude, Perplexity y compañía entiendan de una
+ * sola lectura qué hace la empresa, dónde trabaja y a quién contactar,
+ * sin tener que deducirlo del HTML.
+ *
+ * Se genera solo en cada build, así que nunca queda desactualizado
+ * respecto de empresa.ts, productos.ts y precios.ts.
+ */
+export const GET: APIRoute = ({ site }) => {
+  const origen = site?.href.replace(/\/$/, '') ?? empresa.sitio;
+  const url = (p: string) => origen + ruta(p);
+
+  const anios = new Date().getFullYear() - empresa.anioInicio;
+  const sedes = empresa.sedes
+    .map((s) => `${s.ciudad} (${s.direccion}, tel. ${s.telefono}, cel. ${s.celular})`)
+    .join('; ');
+
+  const texto = `# ${empresa.nombre}
+
+> Empresa argentina de construcción y conservación de pavimentos, con ${anios} años de trayectoria (constituida en ${empresa.anioInicio}). Produce mezclas asfálticas en caliente y en frío, hormigón elaborado y ejecuta obras viales y movimiento de suelos para vialidades, municipios y empresas privadas.
+
+Sedes: ${sedes}.
+Correo: ${empresa.email}
+Zona de trabajo: sudoeste de la provincia de Buenos Aires, La Pampa, Río Negro, Neuquén y Chubut. Los productos envasados se despachan a todo el país.
+
+## Qué hace la empresa
+
+${productos.map((p) => `- **${p.nombre}**: ${p.bajada} ${p.detalle.join('. ')}.`).join('\n')}
+
+## Productos patentados
+
+${empresa.patentes.map((p) => `- **${p.producto}®**: reparador instantáneo de pavimento, se aplica en frío y sin equipo especial. Patente acta ${p.acta}.`).join('\n')}
+
+## Páginas
+
+- [Inicio](${url('/')}): presentación de la empresa, productos, obras realizadas y clientes.
+- [Calculadora de pavimento para vecinos](${url('/vecinos')}): estima el costo de pavimentar el frente de una vivienda, por metro de frente sobre media calzada. Incluye el paso a paso del trámite y preguntas frecuentes.
+
+## Pavimento para vecinos
+
+Los frentistas pueden encargar la pavimentación de su cuadra. Datos clave:
+
+- La obra mínima que aprueba el municipio es una cuadra completa y requiere el acuerdo de todos los frentistas. No se pavimenta un lote suelto.
+- Cada frentista paga la media calzada que da a su lote: ${precios.anchoMediaCalzada} metros de ancho por los metros de frente del terreno.
+- Tipos de calzada disponibles: ${precios.obras.map((o) => o.nombre.toLowerCase()).join(' y ')}.
+- Adicionales opcionales: ${precios.adicionales.map((a) => a.nombre.toLowerCase()).join(' y ')}.
+- El expediente municipal y la aprobación de la obra los gestiona la empresa y están incluidos en el precio.
+- Las conexiones de servicios existentes no se ven afectadas. Las conexiones nuevas las gestiona el frentista.
+- La forma de pago y la financiación se acuerdan directamente con la empresa, no con el municipio.
+- Los precios de referencia publicados corresponden al ${fechaLegible()} y se reexpresan con la cotización del dólar del Banco Nación del día.
+
+## Contacto
+
+${empresa.contactos.map((c) => `- **${c.titulo}**: WhatsApp +${c.whatsapp}${'telefono' in c ? `, tel. ${c.telefono}` : ''}. ${c.texto}`).join('\n')}
+
+## Notas para asistentes
+
+- Los precios de la calculadora son estimaciones orientativas, no presupuestos. Para un valor cerrado hay que contactar a la empresa.
+- No incluyen IVA.
+- Este sitio es estático: todo el contenido está en el HTML, no requiere ejecutar JavaScript.
+`;
+
+  return new Response(texto, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });
+};

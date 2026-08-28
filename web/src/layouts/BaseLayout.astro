@@ -10,12 +10,15 @@ interface Props {
   title?: string;
   description?: string;
   path?: string;
+  /** Para páginas internas que no tienen que aparecer en buscadores. */
+  noindex?: boolean;
 }
 
 const {
   title = `${empresa.nombre} — Pavimentos, asfalto y hormigón`,
   description = empresa.descripcion,
   path = '/',
+  noindex = false,
 } = Astro.props;
 
 // Astro.site sale de astro.config.mjs y cambia según dónde se publique.
@@ -24,15 +27,44 @@ const canonical = new URL(ruta(path), origen).href;
 const ogImage = new URL(ruta('/og.jpg'), origen).href;
 
 // Datos estructurados para que Google entienda quiénes somos y dónde estamos.
+// Una sucursal por sede, para que cada una pueda aparecer en el mapa.
+const sucursales = empresa.sedes.map((s) => ({
+  '@type': 'LocalBusiness',
+  '@id': `${origen}#${s.ciudad.toLowerCase().replace(/[^a-z]/g, '')}`,
+  name: `${empresa.nombre} — ${s.ciudad}`,
+  parentOrganization: { '@id': `${origen}#empresa` },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: s.direccion,
+    addressLocality: s.ciudad,
+    addressRegion: s.provincia,
+    addressCountry: 'AR',
+  },
+  telephone: s.telefonoLink,
+  email: empresa.email,
+  hasMap: s.mapa,
+}));
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'GeneralContractor',
+  '@id': `${origen}#empresa`,
   name: empresa.nombre,
+  alternateName: empresa.nombreCorto,
   description: empresa.descripcion,
   url: empresa.sitio,
   email: empresa.email,
+  image: ogImage,
   foundingDate: String(empresa.anioInicio),
-  areaServed: 'Argentina',
+  knowsLanguage: 'es-AR',
+  areaServed: [
+    'Buenos Aires',
+    'La Pampa',
+    'Río Negro',
+    'Neuquén',
+    'Chubut',
+    'Argentina',
+  ].map((n) => ({ '@type': 'AdministrativeArea', name: n })),
   address: empresa.sedes.map((s) => ({
     '@type': 'PostalAddress',
     streetAddress: s.direccion,
@@ -40,6 +72,7 @@ const schema = {
     addressRegion: s.provincia,
     addressCountry: 'AR',
   })),
+  location: sucursales,
   telephone: empresa.sedes.map((s) => s.telefonoLink),
   makesOffer: [
     'Mezclas asfálticas en caliente',
@@ -60,6 +93,27 @@ const schema = {
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#14171c" />
+
+    <!-- Permite a Google mostrar la imagen grande y el texto completo en el resultado -->
+    <meta
+      name="robots"
+      content={
+        noindex
+          ? 'noindex, nofollow'
+          : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+      }
+    />
+    <meta name="author" content={empresa.nombre} />
+    <meta name="geo.region" content="AR-B" />
+    <meta name="geo.placename" content="Pigüé, Bahía Blanca" />
+
+    <!-- Resumen del sitio en markdown, para asistentes de IA -->
+    <link rel="alternate" type="text/plain" href={new URL(ruta('/llms.txt'), origen).href} title="llms.txt" />
+    <link
+      rel="sitemap"
+      type="application/xml"
+      href={new URL(ruta('/sitemap-index.xml'), origen).href}
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={empresa.nombre} />

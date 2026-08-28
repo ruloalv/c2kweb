@@ -1,0 +1,352 @@
+---
+/**
+ * Herramienta interna para actualizar los precios de la calculadora.
+ *
+ * No guarda nada: el sitio es estático y no tiene servidor. Lo que hace es
+ * armar el bloque de configuración ya escrito, para pegarlo en
+ * src/config/precios.ts sin riesgo de romper la sintaxis.
+ *
+ * No está enlazada desde ninguna parte del sitio, no aparece en el sitemap
+ * y lleva noindex. Aun así es una URL pública: no pongas acá nada que no
+ * pueda ver cualquiera. Los precios ya son públicos en la calculadora.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { precios } from '../config/precios';
+
+const actual = {
+  fecha: precios.fechaActualizacion,
+  dolar: precios.dolarReferencia,
+  vigencia: precios.vigenciaDias,
+  ancho: precios.anchoMediaCalzada,
+  obras: precios.obras.map((o) => ({
+    id: o.id,
+    nombre: o.nombre,
+    detalle: o.detalle,
+    precio: o.precioM2,
+  })),
+  adicionales: precios.adicionales.map((a) => ({
+    id: a.id,
+    nombre: a.nombre,
+    detalle: a.detalle,
+    precio: a.precioPorMetroFrente,
+  })),
+};
+---
+
+<BaseLayout title="Actualizar precios — uso interno" path="/precios" noindex>
+
+  <section class="bg-asfalto-50 py-14 dark:bg-asfalto-900">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <p class="text-sm font-semibold uppercase tracking-widest text-rojo-500 dark:text-amarillo">
+        Uso interno
+      </p>
+      <h1 class="titulo-seccion mt-3 text-3xl sm:text-4xl">Actualizar precios</h1>
+      <p class="mt-4 text-asfalto-600 dark:text-asfalto-300">
+        Cargá los valores de hoy. Abajo se arma el texto listo para pegar en
+        <code class="rounded bg-asfalto-100 px-1.5 py-0.5 text-sm dark:bg-asfalto-800"
+          >src/config/precios.ts</code
+        >. Esta página no guarda nada: el sitio es estático y los precios viven en el código.
+      </p>
+
+      <!-- Formulario -->
+      <div class="mt-8 rounded-2xl border border-asfalto-100 bg-white p-7 dark:border-white/10 dark:bg-asfalto-800">
+        <div class="grid gap-5 sm:grid-cols-2">
+          <div>
+            <label for="fecha" class="block font-semibold">Fecha de los precios</label>
+            <input
+              id="fecha"
+              type="date"
+              value={actual.fecha}
+              class="mt-2 w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+            />
+          </div>
+
+          <div>
+            <label for="dolar" class="block font-semibold">Dólar BNA billetes, venta</label>
+            <div class="mt-2 flex gap-2">
+              <input
+                id="dolar"
+                type="number"
+                min="1"
+                step="1"
+                value={actual.dolar}
+                inputmode="numeric"
+                class="w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+              />
+              <button
+                id="traer-dolar"
+                type="button"
+                class="shrink-0 rounded-lg bg-asfalto-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-asfalto-700 dark:bg-amarillo dark:text-asfalto-950"
+              >
+                Traer de hoy
+              </button>
+            </div>
+            <p id="dolar-info" class="mt-1 text-xs text-asfalto-600 dark:text-asfalto-300"></p>
+          </div>
+
+          <div>
+            <label for="ancho" class="block font-semibold">Ancho de media calzada (m)</label>
+            <input
+              id="ancho"
+              type="number"
+              min="1"
+              step="0.5"
+              value={actual.ancho}
+              inputmode="decimal"
+              class="mt-2 w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+            />
+          </div>
+
+          <div>
+            <label for="vigencia" class="block font-semibold">Avisar a los (días)</label>
+            <input
+              id="vigencia"
+              type="number"
+              min="1"
+              step="1"
+              value={actual.vigencia}
+              inputmode="numeric"
+              class="mt-2 w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+            />
+          </div>
+        </div>
+
+        <h2 class="mt-8 text-sm font-bold uppercase tracking-wider text-asfalto-600 dark:text-asfalto-300">
+          Precio por metro cuadrado
+        </h2>
+        <div class="mt-3 grid gap-5 sm:grid-cols-2">
+          {
+            actual.obras.map((o) => (
+              <div>
+                <label for={`obra-${o.id}`} class="block font-semibold">
+                  {o.nombre}
+                </label>
+                <input
+                  id={`obra-${o.id}`}
+                  data-obra={o.id}
+                  type="number"
+                  min="0"
+                  step="1000"
+                  value={o.precio}
+                  inputmode="numeric"
+                  class="mt-2 w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <h2 class="mt-8 text-sm font-bold uppercase tracking-wider text-asfalto-600 dark:text-asfalto-300">
+          Precio por metro lineal de frente
+        </h2>
+        <div class="mt-3 grid gap-5 sm:grid-cols-2">
+          {
+            actual.adicionales.map((a) => (
+              <div>
+                <label for={`adic-${a.id}`} class="block font-semibold">
+                  {a.nombre}
+                </label>
+                <input
+                  id={`adic-${a.id}`}
+                  data-adicional={a.id}
+                  type="number"
+                  min="0"
+                  step="1000"
+                  value={a.precio}
+                  inputmode="numeric"
+                  class="mt-2 w-full rounded-lg border border-asfalto-100 px-3 py-2.5 dark:border-white/15 dark:bg-asfalto-900"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Control: cuánto da un frente de 10 m -->
+      <div class="mt-6 rounded-2xl bg-asfalto-900 p-7 text-white">
+        <h2 class="text-sm font-bold uppercase tracking-widest text-amarillo">
+          Control — frente de 10 m
+        </h2>
+        <p class="mt-2 text-sm text-asfalto-300">
+          Revisá que estos números cierren antes de publicar.
+        </p>
+        <ul id="control" class="mt-4 space-y-2 text-sm"></ul>
+      </div>
+
+      <!-- Salida -->
+      <div class="mt-6 rounded-2xl border border-asfalto-100 bg-white p-7 dark:border-white/10 dark:bg-asfalto-800">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="font-bold">Texto para pegar</h2>
+          <button
+            id="copiar"
+            type="button"
+            class="rounded-lg bg-rojo-500 px-5 py-2.5 font-semibold text-white transition hover:bg-rojo-600"
+          >
+            Copiar
+          </button>
+        </div>
+        <p class="mt-2 text-sm text-asfalto-600 dark:text-asfalto-300">
+          Reemplazá con esto las líneas equivalentes de <code>src/config/precios.ts</code>.
+        </p>
+        <pre
+          id="salida"
+          class="mt-4 overflow-x-auto rounded-xl bg-asfalto-950 p-5 text-sm leading-relaxed text-asfalto-100"></pre>
+        <script
+          id="datos-actuales"
+          type="application/json"
+          is:inline
+          set:html={JSON.stringify(actual)}
+        />
+      </div>
+
+      <!-- Instructivo -->
+      <div class="mt-6 rounded-2xl border border-asfalto-100 bg-white p-7 dark:border-white/10 dark:bg-asfalto-800">
+        <h2 class="font-bold">Cómo lo publicás</h2>
+        <ol class="mt-4 space-y-3 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+          <li>
+            <strong class="text-asfalto-900 dark:text-white">1.</strong> Abrí
+            <a
+              href="https://github.com/ruloalv/c2kweb/edit/main/web/src/config/precios.ts"
+              target="_blank"
+              rel="noopener"
+              class="font-semibold text-rojo-500 underline underline-offset-4 dark:text-amarillo"
+              >el archivo de precios en GitHub</a
+            >. Se abre directo en modo edición.
+          </li>
+          <li>
+            <strong class="text-asfalto-900 dark:text-white">2.</strong> Reemplazá las líneas por el
+            texto de arriba.
+          </li>
+          <li>
+            <strong class="text-asfalto-900 dark:text-white">3.</strong> Abajo de todo,
+            <em>Commit changes</em>. Escribí qué cambiaste, por ejemplo “precios de marzo”.
+          </li>
+          <li>
+            <strong class="text-asfalto-900 dark:text-white">4.</strong> En dos minutos el sitio se
+            recompila y publica solo. Podés seguirlo en la pestaña
+            <em>Actions</em> del repositorio.
+          </li>
+        </ol>
+        <p class="mt-4 text-sm text-asfalto-600 dark:text-asfalto-300">
+          Si algo sale mal, en GitHub queda el historial: se vuelve atrás sin perder nada.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const money = new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS',
+    maximumFractionDigits: 0,
+  });
+
+  // Los nombres y descripciones salen de precios.ts, así el bloque generado
+  // sale completo y no hay que acordarse de copiarlos a mano.
+  const datos = JSON.parse(document.getElementById('datos-actuales')!.textContent!);
+
+  const obras = [...document.querySelectorAll<HTMLInputElement>('[data-obra]')];
+  const adicionales = [...document.querySelectorAll<HTMLInputElement>('[data-adicional]')];
+  const nombreDe = (el: HTMLInputElement) =>
+    document.querySelector(`label[for="${el.id}"]`)?.textContent?.trim() ?? el.id;
+
+  function generar() {
+    const ancho = parseFloat($('ancho').value) || 0;
+
+    // Control con un frente de 10 m
+    const filas: string[] = [];
+    for (const o of obras) {
+      const m2 = parseFloat(o.value) || 0;
+      const porMl = m2 * ancho;
+      filas.push(
+        `<li class="flex justify-between gap-4"><span>${nombreDe(o)}</span>` +
+          `<span class="text-right"><strong>${money.format(porMl * 10)}</strong>` +
+          `<span class="block text-asfalto-300">${money.format(porMl)} por metro de frente</span></span></li>`
+      );
+    }
+    for (const a of adicionales) {
+      const porMl = parseFloat(a.value) || 0;
+      filas.push(
+        `<li class="flex justify-between gap-4"><span>${nombreDe(a)}</span>` +
+          `<span class="text-right"><strong>${money.format(porMl * 10)}</strong>` +
+          `<span class="block text-asfalto-300">${money.format(porMl)} por metro de frente</span></span></li>`
+      );
+    }
+    document.getElementById('control')!.innerHTML = filas.join('');
+
+    // Bloque para pegar: se emiten los arrays enteros, así no hay dudas sobre
+    // qué línea reemplazar.
+    const txt = (s: string) => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+
+    const bloque = [
+      `  fechaActualizacion: ${txt($('fecha').value)},`,
+      `  dolarReferencia: ${parseInt($('dolar').value) || 0},`,
+      `  vigenciaDias: ${parseInt($('vigencia').value) || 30},`,
+      '',
+      `  anchoMediaCalzada: ${ancho},`,
+      '',
+      '  obras: [',
+      ...obras.flatMap((el, i) => {
+        const d = datos.obras[i];
+        return [
+          '    {',
+          `      id: ${txt(d.id)},`,
+          `      nombre: ${txt(d.nombre)},`,
+          `      detalle: ${txt(d.detalle)},`,
+          `      precioM2: ${parseInt(el.value) || 0},`,
+          '    },',
+        ];
+      }),
+      '  ],',
+      '',
+      '  adicionales: [',
+      ...adicionales.flatMap((el, i) => {
+        const d = datos.adicionales[i];
+        return [
+          '    {',
+          `      id: ${txt(d.id)},`,
+          `      nombre: ${txt(d.nombre)},`,
+          `      detalle: ${txt(d.detalle)},`,
+          `      precioPorMetroFrente: ${parseInt(el.value) || 0},`,
+          '    },',
+        ];
+      }),
+      '  ],',
+    ].join('\n');
+
+    document.getElementById('salida')!.textContent = bloque;
+  }
+
+  document.querySelectorAll('input').forEach((i) => i.addEventListener('input', generar));
+
+  // Trae el dólar oficial del día
+  document.getElementById('traer-dolar')!.addEventListener('click', async () => {
+    const info = document.getElementById('dolar-info')!;
+    info.textContent = 'Buscando…';
+    try {
+      const r = await fetch('https://dolarapi.com/v1/dolares/oficial', { cache: 'no-store' });
+      const d = await r.json();
+      $('dolar').value = String(Math.round(Number(d.venta)));
+      $('fecha').value = new Date().toISOString().slice(0, 10);
+      info.textContent = `Dólar oficial venta: $${d.venta}`;
+      generar();
+    } catch {
+      info.textContent = 'No se pudo consultar. Cargalo a mano.';
+    }
+  });
+
+  document.getElementById('copiar')!.addEventListener('click', async () => {
+    const btn = document.getElementById('copiar')!;
+    try {
+      await navigator.clipboard.writeText(document.getElementById('salida')!.textContent ?? '');
+      btn.textContent = 'Copiado';
+      setTimeout(() => (btn.textContent = 'Copiar'), 2000);
+    } catch {
+      btn.textContent = 'Copialo a mano';
+    }
+  });
+
+  generar();
+</script>

@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "check-precios": "node scripts/check-precios.mjs",
-    "genera-og": "node scripts/genera-og.mjs"
+    "genera-og": "node scripts/genera-og.mjs",
+    "verifica": "node scripts/verifica-sitio.mjs",
+    "postbuild": "node scripts/verifica-sitio.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

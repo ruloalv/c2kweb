@@ -13,6 +13,7 @@ datos: se compila a HTML y se sube a cualquier hosting.
 | `npm run preview`       | Prueba el sitio ya compilado                       |
 | `npm run check-precios` | Dice si hay que actualizar los precios de vecinos  |
 | `npm run genera-og`     | Rehace la imagen que se ve al compartir el sitio    |
+| `npm run verifica`      | Revisa el sitio compilado (corre solo tras el build) |
 
 `npm run dev` y `npm run build` corren solos el chequeo de precios y avisan por
 consola si están vencidos.
@@ -38,6 +39,12 @@ En `public/` solo quedan el logo, el favicon, `og.jpg` y `robots.txt`.
 
 ## Actualizar los precios de vecinos
 
+La forma más simple es abrir la página **/precios** del sitio (no está enlazada
+ni indexada): cargás los valores, trae solo el dólar del día, te muestra cuánto
+daría un frente de 10 m para que controles, y te arma el texto listo para pegar.
+
+También se puede editar el archivo a mano.
+
 En `src/config/precios.ts` se cargan tres cosas:
 
 1. `fechaActualizacion` — el día que ponés los precios.
@@ -58,6 +65,20 @@ Pasados los días de `vigenciaDias` (hoy, 30), la web muestra sola una
 advertencia al vecino y la consola avisa al compilar.
 
 Si preferís precio fijo en pesos, poné `ajustarPorDolar: false`.
+
+## Archivos para buscadores y asistentes de IA
+
+Se generan en cada build, así que las URLs siempre coinciden con el destino:
+
+| Archivo | Origen |
+| :--- | :--- |
+| `robots.txt` | `src/pages/robots.txt.ts` |
+| `llms.txt` | `src/pages/llms.txt.ts` |
+| `sitemap-index.xml` | integración `@astrojs/sitemap` |
+
+`npm run verifica` los controla después de cada build: 38 chequeos que incluyen
+H1 presente, 500+ caracteres de texto sin JavaScript, datos estructurados con
+JSON válido y coincidencia entre el sitemap y la URL canónica.
 
 ## Estructura
 

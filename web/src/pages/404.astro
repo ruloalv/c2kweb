@@ -1,22 +1,55 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { ruta } from '../config/rutas';
+import { empresa } from '../config/empresa';
+
+// Salidas para quien llegó a una URL que no existe: una persona hace clic,
+// un agente lee la lista y sabe a dónde ir.
+const salidas = [
+  { href: ruta('/'), texto: 'Inicio', detalle: 'Productos, obras, clientes y contacto' },
+  {
+    href: ruta('/vecinos'),
+    texto: 'Pavimento para vecinos',
+    detalle: 'Calculadora de costo por metro de frente',
+  },
+  { href: ruta('/sitemap-index.xml'), texto: 'sitemap.xml', detalle: 'Índice de páginas' },
+  { href: ruta('/llms.txt'), texto: 'llms.txt', detalle: 'Resumen del sitio en texto plano' },
+];
 ---
 
 <BaseLayout title="Página no encontrada — Carreteras 2000 S.A." path="/404">
-  <section class="bg-asfalto-950 py-28 text-white sm:py-36">
-    <div class="mx-auto max-w-3xl px-4 text-center sm:px-6">
+  <section class="bg-asfalto-950 py-24 text-white sm:py-32">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6">
       <p class="text-7xl font-extrabold text-amarillo">404</p>
       <h1 class="titulo-seccion mt-4 text-3xl sm:text-4xl">Esta página no existe</h1>
       <p class="mt-4 text-lg text-asfalto-300">
-        Puede que el enlace esté viejo. Volvé al inicio o escribinos y te orientamos.
+        Puede que el enlace esté viejo. Estas son las páginas del sitio:
       </p>
-      <a
-        href={ruta('/')}
-        class="mt-8 inline-block rounded-lg bg-rojo-500 px-7 py-4 font-semibold transition hover:bg-rojo-600"
-      >
-        Volver al inicio
-      </a>
+
+      <ul class="mt-8 divide-y divide-white/10 border-y border-white/10">
+        {
+          salidas.map((s) => (
+            <li>
+              <a href={s.href} class="flex items-baseline justify-between gap-4 py-4 hover:bg-white/5">
+                <span>
+                  <span class="font-semibold text-amarillo">{s.texto}</span>
+                  <span class="mt-0.5 block text-sm text-asfalto-300">{s.detalle}</span>
+                </span>
+                <span class="shrink-0 text-asfalto-300" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="mt-8 text-asfalto-300">
+        Si necesitás hablar con alguien, escribinos a
+        <a href={`mailto:${empresa.email}`} class="enlace-toque font-semibold text-amarillo underline underline-offset-4">
+          {empresa.email}
+        </a>
+      </p>
     </div>
   </section>
 </BaseLayout>

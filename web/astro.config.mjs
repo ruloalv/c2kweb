@@ -14,7 +14,8 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: process.env.SITE_URL || 'https://www.carreteras2000.com.ar',
   base: process.env.BASE_PATH || '/',
-  integrations: [sitemap()],
+  // La página de precios es una herramienta interna: no va al sitemap ni a Google.
+  integrations: [sitemap({ filter: (pagina) => !pagina.includes('/precios') })],
   build: {
     inlineStylesheets: 'auto',
   },
