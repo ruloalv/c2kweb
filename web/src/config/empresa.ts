@@ -42,7 +42,10 @@ export const empresa = {
       telefono: '02923-407910',
       telefonoLink: '+542923407910',
       celular: '291 506-5034',
-      mapa: 'https://www.google.com/maps/search/?api=1&query=Caseaux+1514+Pig%C3%BC%C3%A9+Buenos+Aires',
+      // Coordenadas de la planta, tomadas de la ficha de Google Maps.
+      lat: -37.611397,
+      lng: -62.429845,
+      mapa: 'https://www.google.com/maps/search/?api=1&query=-37.611397%2C-62.429845',
     },
   ],
 

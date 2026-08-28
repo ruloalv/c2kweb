@@ -50,13 +50,14 @@ export const precios = {
     },
   ],
 
-  // --- ADICIONALES OPCIONALES ---
-  // Estos van por METRO LINEAL de frente, no por m².
+  // --- TRABAJOS QUE VAN POR METRO LINEAL DE FRENTE ---
+  // Se pueden pedir junto con el pavimento o por separado. El cordón cuneta,
+  // por ejemplo, se cotiza solo si la cuadra todavía no lo tiene.
   adicionales: [
     {
       id: 'cordon',
       nombre: 'Cordón cuneta',
-      detalle: 'Si la cuadra todavía no tiene.',
+      detalle: 'Si la cuadra todavía no tiene. Se puede hacer sin pavimentar.',
       precioPorMetroFrente: 79000,
     },
     {
@@ -66,6 +67,20 @@ export const precios = {
       precioPorMetroFrente: 39000,
     },
   ],
+
+  // --- BADENES ---
+  // Solo se ofrecen cuando se hace cordón cuneta, porque van integrados a él.
+  // Se cobran por unidad, no por metro.
+  //
+  // >>> FALTA EL PRECIO. Mientras esté en 0, la calculadora los muestra como
+  // >>> "a cotizar" y no los suma al total, así no se publica un número
+  // >>> inventado. Poné el valor por unidad y listo.
+  badenes: {
+    nombre: 'Badenes',
+    detalle: 'Para el desagüe de la cuadra. Van integrados al cordón cuneta.',
+    precioPorUnidad: 0,
+    maximo: 2,
+  },
 
   // --- AVISOS DESTACADOS DEBAJO DE LA CALCULADORA ---
   // Van resaltados en amarillo. Son las dos cosas que más pregunta la gente.

@@ -43,6 +43,11 @@ const sucursales = empresa.sedes.map((s) => ({
   telephone: s.telefonoLink,
   email: empresa.email,
   hasMap: s.mapa,
+  // Solo las sedes con coordenadas cargadas. Ayuda a que Google las ubique
+  // en el mapa en vez de deducirlas de la dirección.
+  ...('lat' in s && 'lng' in s
+    ? { geo: { '@type': 'GeoCoordinates', latitude: s.lat, longitude: s.lng } }
+    : {}),
 }));
 
 const schema = {

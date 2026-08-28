@@ -6,6 +6,7 @@ import { empresa } from '../config/empresa';
 const config = {
   obras: precios.obras,
   adicionales: precios.adicionales,
+  badenes: precios.badenes,
   anchoMediaCalzada: precios.anchoMediaCalzada,
   dolarReferencia: precios.dolarReferencia,
   fuenteDolar: precios.fuenteDolar,
@@ -83,16 +84,28 @@ const config = {
         </div>
       </div>
 
-      <!-- Tipo de calzada -->
+      <!--
+        Qué trabajos entran. Cada uno se puede pedir por separado: hay cuadras
+        que solo necesitan el cordón cuneta.
+      -->
       <fieldset class="mt-8">
-        <legend class="font-semibold">Tipo de calzada</legend>
-        <div id="obras-lista" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+        <legend class="font-semibold">¿Qué trabajos necesitás?</legend>
+        <div id="trabajos-lista" class="mt-3 grid gap-3"></div>
       </fieldset>
 
-      <!-- Adicionales -->
-      <fieldset class="mt-8">
-        <legend class="font-semibold">Adicionales</legend>
-        <div id="adicionales-lista" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+      <!-- Aparece solo si se pidió pavimento -->
+      <fieldset id="grupo-calzada" class="mt-6 rounded-xl bg-asfalto-50 p-5 dark:bg-asfalto-900" hidden>
+        <legend class="px-1 font-semibold">Tipo de calzada</legend>
+        <div id="obras-lista" class="mt-2 grid gap-3 sm:grid-cols-2"></div>
+      </fieldset>
+
+      <!-- Aparece solo si se pidió cordón cuneta -->
+      <fieldset id="grupo-badenes" class="mt-6 rounded-xl bg-asfalto-50 p-5 dark:bg-asfalto-900" hidden>
+        <legend class="px-1 font-semibold">Badenes</legend>
+        <p class="mt-1 text-sm text-asfalto-600 dark:text-asfalto-300">
+          {precios.badenes.detalle}
+        </p>
+        <div id="badenes-lista" class="mt-3 flex flex-wrap gap-3"></div>
       </fieldset>
     </form>
 
@@ -187,39 +200,96 @@ const config = {
     let dolarHoy = null;
 
     // --- Pintar opciones ---
-    const listaObras = $('obras-lista');
-    config.obras.forEach((o, i) => {
-      listaObras.insertAdjacentHTML(
-        'beforeend',
-        '<label class="flex cursor-pointer gap-3 rounded-xl border border-asfalto-100 p-4 transition has-[:checked]:border-rojo-500 has-[:checked]:bg-rojo-500/5 dark:border-white/15">' +
-          '<input type="radio" name="obra" value="' +
-          o.id +
-          '" class="mt-1 h-4 w-4 accent-rojo-500"' +
-          (i === 0 ? ' checked' : '') +
-          ' />' +
-          '<span><span class="block font-semibold">' +
-          o.nombre +
-          '</span><span class="mt-1 block text-sm text-asfalto-600 dark:text-asfalto-300">' +
-          o.detalle +
-          '</span></span></label>'
-      );
-    });
+    const tarjeta =
+      'flex cursor-pointer gap-3 rounded-xl border border-asfalto-100 p-4 transition ' +
+      'has-[:checked]:border-rojo-500 has-[:checked]:bg-rojo-500/5 dark:border-white/15';
 
-    const listaAdic = $('adicionales-lista');
-    config.adicionales.forEach((a) => {
-      listaAdic.insertAdjacentHTML(
-        'beforeend',
-        '<label class="flex cursor-pointer gap-3 rounded-xl border border-asfalto-100 p-4 transition has-[:checked]:border-rojo-500 has-[:checked]:bg-rojo-500/5 dark:border-white/15">' +
-          '<input type="checkbox" name="adicional" value="' +
-          a.id +
-          '" class="mt-1 h-4 w-4 rounded accent-rojo-500" />' +
-          '<span><span class="block font-semibold">' +
-          a.nombre +
-          '</span><span class="mt-1 block text-sm text-asfalto-600 dark:text-asfalto-300">' +
-          a.detalle +
-          '</span></span></label>'
-      );
-    });
+    const opcion = (tipo, name, valor, titulo, detalle, extra) =>
+      '<label class="' +
+      tarjeta +
+      '"><input type="' +
+      tipo +
+      '" name="' +
+      name +
+      '" value="' +
+      valor +
+      '" class="mt-1 h-4 w-4 ' +
+      (tipo === 'checkbox' ? 'rounded ' : '') +
+      'accent-rojo-500"' +
+      (extra || '') +
+      ' /><span><span class="block font-semibold">' +
+      titulo +
+      '</span>' +
+      (detalle
+        ? '<span class="mt-1 block text-sm text-asfalto-600 dark:text-asfalto-300">' +
+          detalle +
+          '</span>'
+        : '') +
+      '</span></label>';
+
+    // Los trabajos que se pueden pedir. El pavimento va primero y viene tildado;
+    // los demás se suman o se piden solos.
+    const trabajos = [
+      {
+        id: 'pavimento',
+        nombre: 'Pavimento de calzada',
+        detalle: 'Media calzada frente a tu lote.',
+        porDefecto: true,
+      },
+      ...config.adicionales.map((a) => ({
+        id: a.id,
+        nombre: a.nombre,
+        detalle: a.detalle,
+        porDefecto: false,
+      })),
+    ];
+
+    $('trabajos-lista').innerHTML = trabajos
+      .map((t) =>
+        opcion(
+          'checkbox',
+          'trabajo',
+          t.id,
+          t.nombre,
+          t.detalle,
+          t.porDefecto ? ' checked' : ''
+        )
+      )
+      .join('');
+
+    $('obras-lista').innerHTML = config.obras
+      .map((o, i) => opcion('radio', 'obra', o.id, o.nombre, o.detalle, i === 0 ? ' checked' : ''))
+      .join('');
+
+    // Badenes: 0, 1 o 2. Van en un grupo de radios porque son pocas opciones y
+    // conviene verlas todas juntas, sin abrir un desplegable.
+    const opcionesBaden = [{ v: 0, t: 'Sin badenes' }];
+    for (let i = 1; i <= config.badenes.maximo; i++) {
+      opcionesBaden.push({ v: i, t: i === 1 ? '1 badén' : i + ' badenes' });
+    }
+    $('badenes-lista').innerHTML = opcionesBaden
+      .map((b) =>
+        '<label class="' +
+        tarjeta +
+        ' items-center"><input type="radio" name="badenes" value="' +
+        b.v +
+        '" class="h-4 w-4 accent-rojo-500"' +
+        (b.v === 0 ? ' checked' : '') +
+        ' /><span class="font-semibold">' +
+        b.t +
+        '</span></label>'
+      )
+      .join('');
+
+    // Muestra u oculta los grupos que dependen de un tilde. Se usa el atributo
+    // `hidden` y no una clase, para que lo oculto salga del orden de tabulación
+    // y del árbol de accesibilidad.
+    function sincronizarGrupos() {
+      const marcado = (id) =>
+        !!document.querySelector('input[name="trabajo"][value="' + id + '"]:checked');
+      $('grupo-calzada').hidden = !marcado('pavimento');
+      $('grupo-badenes').hidden = !marcado('cordon');
+    }
 
     // --- Sincronizar la barra con el número ---
     const rango = $('frente');
@@ -253,50 +323,93 @@ const config = {
     // Se redondea a mil para que quede claro que es una estimación.
     const redondear = (n) => Math.round(n / 1000) * 1000;
 
-    function calcular() {
-      const m = metros();
-      const seleccion = document.querySelector('input[name="obra"]:checked');
-      const obra = seleccion ? config.obras.find((o) => o.id === seleccion.value) : null;
-      const elegidos = Array.from(document.querySelectorAll('input[name="adicional"]:checked')).map((i) =>
-        config.adicionales.find((a) => a.id === i.value)
-      );
+    // Deja el resultado en blanco con un mensaje de qué falta cargar.
+    function vaciar(mensaje) {
+      $('total').textContent = '—';
+      $('desglose').innerHTML = '';
+      $('por-metro').textContent = mensaje;
+    }
 
-      if (!obra || m <= 0) {
-        $('total').textContent = '—';
-        $('desglose').innerHTML = '';
-        $('por-metro').textContent = 'Cargá los metros de frente';
+    function calcular() {
+      sincronizarGrupos();
+
+      const m = metros();
+      const pedido = (id) =>
+        !!document.querySelector('input[name="trabajo"][value="' + id + '"]:checked');
+
+      const seleccion = document.querySelector('input[name="obra"]:checked');
+      const obra = pedido('pavimento') && seleccion
+        ? config.obras.find((o) => o.id === seleccion.value)
+        : null;
+
+      const elegidos = config.adicionales.filter((a) => pedido(a.id));
+
+      const cantBadenes = pedido('cordon')
+        ? parseInt(document.querySelector('input[name="badenes"]:checked')?.value ?? '0', 10)
+        : 0;
+
+      if (m <= 0) {
+        vaciar('Cargá los metros de frente');
+        return;
+      }
+      if (!obra && elegidos.length === 0) {
+        vaciar('Elegí al menos un trabajo');
         return;
       }
 
       const filas = [];
+      const lineasWa = [];
       let total = 0;
 
-      // La calzada se cobra por m²: metros de frente por el ancho de media calzada.
-      const superficie = m * config.anchoMediaCalzada;
-      const precioObra = obra.precioM2 * factor * config.anchoMediaCalzada;
-      total += precioObra * m;
-      filas.push([
-        obra.nombre + ' · ' + superficie.toLocaleString('es-AR') + ' m²',
-        precioObra * m,
-      ]);
+      if (obra) {
+        // La calzada se cobra por m²: metros de frente por el ancho de media calzada.
+        const superficie = m * config.anchoMediaCalzada;
+        const precioObra = obra.precioM2 * factor * config.anchoMediaCalzada;
+        total += precioObra * m;
+        filas.push([obra.nombre + ' · ' + superficie.toLocaleString('es-AR') + ' m²', precioObra * m]);
+        lineasWa.push(
+          'Pavimento: ' + obra.nombre + ' — ' + superficie.toLocaleString('es-AR') + ' m² (media calzada)'
+        );
+      }
 
       for (const ad of elegidos) {
         const p = ad.precioPorMetroFrente * factor;
         total += p * m;
         filas.push([ad.nombre + ' · ' + m.toLocaleString('es-AR') + ' m', p * m]);
+        lineasWa.push(ad.nombre + ': ' + m.toLocaleString('es-AR') + ' m');
+      }
+
+      // Los badenes van por unidad. Si todavía no se cargó el precio, se listan
+      // como "a cotizar" en vez de mostrar un número inventado.
+      let badenesACotizar = false;
+      if (cantBadenes > 0) {
+        const etiqueta =
+          config.badenes.nombre + ' · ' + cantBadenes + (cantBadenes === 1 ? ' unidad' : ' unidades');
+        if (config.badenes.precioPorUnidad > 0) {
+          const p = config.badenes.precioPorUnidad * factor * cantBadenes;
+          total += p;
+          filas.push([etiqueta, p]);
+        } else {
+          badenesACotizar = true;
+          filas.push([etiqueta, null]);
+        }
+        lineasWa.push(config.badenes.nombre + ': ' + cantBadenes);
       }
 
       total = redondear(total);
 
       $('total').textContent = money.format(total);
-      $('por-metro').textContent = money.format(redondear(total / m)) + ' por metro de frente';
+      $('por-metro').textContent =
+        money.format(redondear(total / m)) +
+        ' por metro de frente' +
+        (badenesACotizar ? ' · badenes aparte' : '');
       $('desglose').innerHTML = filas
         .map(
           (f) =>
             '<li class="flex justify-between gap-4"><span>' +
             f[0] +
             '</span><span class="shrink-0 font-semibold text-white">' +
-            money.format(redondear(f[1])) +
+            (f[1] === null ? 'a cotizar' : money.format(redondear(f[1]))) +
             '</span></li>'
         )
         .join('');
@@ -306,11 +419,8 @@ const config = {
         'Hola, hice el cálculo en la web y quiero un presupuesto.',
         '',
         'Frente: ' + m.toLocaleString('es-AR') + ' m' + (esquina.checked ? ' (lote en esquina)' : ''),
-        'Obra: ' + obra.nombre + ' — ' + superficie.toLocaleString('es-AR') + ' m² (media calzada)',
-        elegidos.length
-          ? 'Adicionales: ' + elegidos.map((a) => a.nombre).join(', ')
-          : 'Adicionales: ninguno',
-        'Estimado del sitio: ' + money.format(total),
+        ...lineasWa,
+        'Estimado del sitio: ' + money.format(total) + (badenesACotizar ? ' (sin badenes)' : ''),
         '',
         'Mi dirección es:',
       ].join('\n');
