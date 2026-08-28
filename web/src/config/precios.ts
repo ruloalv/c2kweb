@@ -103,11 +103,6 @@ export const precios = {
     },
   ],
 
-  // Aviso para lotes en esquina. No se calculan: la bocacalle se reparte
-  // entre varios frentistas y no hay una regla que sirva para todos los casos.
-  notaEsquina:
-    'Si tu lote es esquina, consultanos. La bocacalle se reparte entre varios frentistas y no entra en este cálculo.',
-
   // --- LETRA CHICA QUE SE MUESTRA DEBAJO DEL RESULTADO ---
   aclaraciones: [
     'El valor es una estimación orientativa, no constituye presupuesto ni oferta.',
