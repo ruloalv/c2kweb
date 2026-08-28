@@ -66,26 +66,21 @@ const config = {
         </div>
       </div>
 
-      <!-- Esquina -->
-      <div class="mt-6 rounded-xl bg-asfalto-50 p-4 dark:bg-asfalto-900">
-        <label class="flex cursor-pointer items-center gap-3 font-medium">
-          <input id="esquina" type="checkbox" class="h-5 w-5 rounded accent-rojo-500" />
-          Mi lote es esquina (tiene dos frentes)
-        </label>
-        <div id="esquina-campo" class="mt-4 hidden">
-          <label for="frente2" class="block text-sm font-semibold">Metros del segundo frente</label>
-          <input
-            id="frente2"
-            type="number"
-            min="1"
-            max="200"
-            step="0.5"
-            value="20"
-            inputmode="decimal"
-            class="mt-2 w-32 rounded-lg border border-asfalto-100 px-3 py-2 text-lg font-bold dark:border-white/15 dark:bg-asfalto-800"
-          />
-        </div>
-      </div>
+      <!-- Los lotes en esquina no se calculan acá -->
+      <p class="mt-4 flex gap-2 text-sm text-asfalto-600 dark:text-asfalto-300">
+        <svg
+          class="mt-0.5 h-4 w-4 shrink-0 text-rojo-500 dark:text-amarillo"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 9a1 1 0 0 1 2 0v4a1 1 0 1 1-2 0V9zm1-4a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"
+            clip-rule="evenodd"></path>
+        </svg>
+        <span>{precios.notaEsquina}</span>
+      </p>
 
       <!--
         Qué trabajos entran. Cada uno se puede pedir por separado: hay cuadras
@@ -278,23 +273,15 @@ const config = {
       calcular();
     });
 
-    const esquina = $('esquina');
-    esquina.addEventListener('change', () => {
-      $('esquina-campo').classList.toggle('hidden', !esquina.checked);
-      calcular();
-    });
-
-    // 'change' cubre los tildes y radios; 'input' hace que los campos numéricos
-    // (segundo frente, metros de la cuadra) recalculen mientras se escribe.
+    // 'change' cubre los tildes y radios; 'input' hace que el campo numérico
+    // del frente recalcule mientras se escribe.
     $('calc-form').addEventListener('change', calcular);
     $('calc-form').addEventListener('input', calcular);
     $('calc-form').addEventListener('submit', (e) => e.preventDefault());
 
     // --- Cálculo ---
     function metros() {
-      const a = parseFloat(numero.value) || 0;
-      const b = esquina.checked ? parseFloat($('frente2').value) || 0 : 0;
-      return Math.max(0, a) + Math.max(0, b);
+      return Math.max(0, parseFloat(numero.value) || 0);
     }
 
     // Se redondea a mil para que quede claro que es una estimación.
@@ -371,7 +358,7 @@ const config = {
       const detalle = [
         'Hola, hice el cálculo en la web y quiero un presupuesto.',
         '',
-        'Frente: ' + m.toLocaleString('es-AR') + ' m' + (esquina.checked ? ' (lote en esquina)' : ''),
+        'Frente: ' + m.toLocaleString('es-AR') + ' m',
         ...lineasWa,
         'Estimado del sitio: ' + money.format(total),
         '',

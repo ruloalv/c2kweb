@@ -127,6 +127,7 @@ Los valores se guardan en su equivalente en dólares y se reexpresan con la coti
 
 ${precios.notasDestacadas.map((n) => `- **${n.titulo}**: ${n.texto}`).join('\n')}
 - **${nota.titulo}**: ${nota.texto}
+- **Lotes en esquina**: ${precios.notaEsquina}
 
 ${precios.aclaraciones.map((a) => `- ${a}`).join('\n')}
 
