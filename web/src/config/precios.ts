@@ -70,16 +70,21 @@ export const precios = {
 
   // --- BADENES ---
   // Solo se ofrecen cuando se hace cordón cuneta, porque van integrados a él.
-  // Se cobran por unidad, no por metro.
   //
-  // >>> FALTA EL PRECIO. Mientras esté en 0, la calculadora los muestra como
-  // >>> "a cotizar" y no los suma al total, así no se publica un número
-  // >>> inventado. Poné el valor por unidad y listo.
+  // Ojo con la cuenta: el badén es una obra de la cuadra entera, no del lote.
+  // Por eso el costo se prorratea entre los frentistas según los metros de
+  // frente de cada uno. Cargarle el badén completo a un solo vecino daría un
+  // número disparatado.
   badenes: {
     nombre: 'Badenes',
-    detalle: 'Para el desagüe de la cuadra. Van integrados al cordón cuneta.',
-    precioPorUnidad: 0,
+    detalle:
+      'Los define el proyecto hidráulico del municipio: pueden ser 0, 1 o 2 por cuadra. El costo se reparte entre los frentistas.',
+    superficiePromedioM2: 70, // superficie promedio de un badén
+    precioM2: 95000, // $ por m²  → 70 m² × 95.000 = $6.650.000 cada uno
     maximo: 2,
+    // Metros de frente que suele tener una cuadra completa, sumando ambas
+    // veredas. Se usa para repartir el costo; el vecino puede corregirlo.
+    frenteCuadraPorDefecto: 200,
   },
 
   // --- AVISOS DESTACADOS DEBAJO DE LA CALCULADORA ---
@@ -94,6 +99,11 @@ export const precios = {
       titulo: 'Servicios existentes',
       texto:
         'Las conexiones en servicio no se ven afectadas por la obra. Las conexiones nuevas las gestiona el frentista y no están incluidas.',
+    },
+    {
+      titulo: 'Los badenes se reparten',
+      texto:
+        'El badén es una obra de la cuadra entera, no de un lote. Su costo se divide entre todos los frentistas según los metros de frente de cada uno, así que el valor que te toca depende de cuántos vecinos participen y de cuánto frente tenga cada uno. La cantidad —ninguno, uno o dos— la define el proyecto hidráulico del municipio.',
     },
   ],
 
