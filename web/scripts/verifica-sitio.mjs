@@ -33,10 +33,12 @@ if (!existsSync(dist)) {
 // --- Archivos que tienen que existir ---
 for (const f of [
   'index.html',
-  'vecinos/index.html',
+  'vecinos.html',
   '404.html',
   'robots.txt',
   'llms.txt',
+  'index.md',
+  'vecinos.md',
   'sitemap-index.xml',
   'og.jpg',
 ]) {
@@ -70,7 +72,7 @@ if (hay('index.html')) {
 }
 
 // --- Los datos estructurados tienen que ser JSON válido ---
-for (const pagina of ['index.html', 'vecinos/index.html']) {
+for (const pagina of ['index.html', 'vecinos.html']) {
   if (!hay(pagina)) continue;
   const bloques = [...leer(pagina).matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   check(`${pagina} tiene datos estructurados`, bloques.length > 0);
@@ -104,12 +106,33 @@ if (hay('llms.txt')) {
   check('llms.txt tiene contenido suficiente', llms.length >= 800, `tiene ${llms.length} caracteres`);
 }
 
+// --- Las versiones en markdown, para agentes ---
+for (const [md, html] of [
+  ['index.md', 'index.html'],
+  ['vecinos.md', 'vecinos.html'],
+]) {
+  if (!hay(md)) continue;
+  const texto = leer(md);
+  check(`${md} arranca con un título H1`, /^# .+/m.test(texto));
+  check(`${md} tiene el resumen en blockquote`, /^> .+/m.test(texto));
+  check(`${md} tiene contenido suficiente`, texto.length >= 800, `tiene ${texto.length}`);
+  check(`${md} no dejó plantillas sin resolver`, !texto.includes('${'));
+  if (hay(html)) {
+    check(
+      `${html} declara su versión markdown`,
+      new RegExp(`rel="alternate"[^>]*type="text/markdown"[^>]*${md.replace('.', '\.')}`).test(leer(html)) ||
+        new RegExp(`type="text/markdown"[^>]*href="[^"]*${md.replace('.', '\.')}"`).test(leer(html))
+    );
+  }
+}
+
 // --- El 404 tiene que ofrecer salidas ---
 if (hay('404.html')) {
   const p404 = leer('404.html');
   check('el 404 enlaza el sitemap', /sitemap-index\.xml/.test(p404));
   check('el 404 enlaza llms.txt', /llms\.txt/.test(p404));
   check('el 404 enlaza páginas del sitio', /href="[^"]*vecinos"/.test(p404));
+  check('el 404 informa el estado como no encontrado', /404/.test(p404));
 }
 
 // --- Las URLs del sitemap tienen que coincidir con el destino ---

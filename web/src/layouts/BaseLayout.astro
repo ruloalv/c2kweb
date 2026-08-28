@@ -23,6 +23,10 @@ const {
 
 // Astro.site sale de astro.config.mjs y cambia según dónde se publique.
 const origen = Astro.site?.href ?? empresa.sitio;
+
+// Páginas que tienen gemela en markdown. Las internas, como /precios, no.
+const gemelas: Record<string, string> = { '/': '/index.md', '/vecinos': '/vecinos.md' };
+const versionMarkdown = gemelas[path];
 const canonical = new URL(ruta(path), origen).href;
 const ogImage = new URL(ruta('/og.jpg'), origen).href;
 
@@ -112,7 +116,17 @@ const schema = {
     <meta name="geo.region" content="AR-B" />
     <meta name="geo.placename" content="Pigüé, Bahía Blanca" />
 
-    <!-- Resumen del sitio en markdown, para asistentes de IA -->
+    <!-- Para asistentes de IA: esta misma página en markdown, y el resumen del sitio -->
+    {
+      versionMarkdown && (
+        <link
+          rel="alternate"
+          type="text/markdown"
+          href={new URL(ruta(versionMarkdown), origen).href}
+          title={`${title} (markdown)`}
+        />
+      )
+    }
     <link rel="alternate" type="text/plain" href={new URL(ruta('/llms.txt'), origen).href} title="llms.txt" />
     <link
       rel="sitemap"

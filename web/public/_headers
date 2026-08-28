@@ -1,0 +1,18 @@
+# Cabeceras HTTP del sitio.
+#
+# GitHub Pages IGNORA este archivo: no permite definir cabeceras. Lo leen
+# Cloudflare Pages y Netlify. Está acá para que, el día que se mude el sitio a
+# uno de esos (o al dominio propio detrás de Cloudflare), la negociación de
+# contenido en markdown funcione sin tener que acordarse de configurarla.
+
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  Vary: Accept
+  Cache-Control: public, max-age=300
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Vary: Accept
+
+/*
+  Vary: Accept, Accept-Encoding

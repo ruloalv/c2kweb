@@ -18,6 +18,11 @@ export default defineConfig({
   integrations: [sitemap({ filter: (pagina) => !pagina.includes('/precios') })],
   build: {
     inlineStylesheets: 'auto',
+    // 'file' genera vecinos.html en vez de vecinos/index.html.
+    // Con eso /vecinos responde 200 directo, sin el 301 a /vecinos/ que hace
+    // GitHub Pages con los directorios. Muchos agentes no siguen redirecciones
+    // y se quedan afuera.
+    format: 'file',
   },
   vite: {
     plugins: [tailwindcss()],
