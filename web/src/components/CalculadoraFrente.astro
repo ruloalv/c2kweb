@@ -1,12 +1,15 @@
 ---
-import { precios, fechaLegible } from '../config/precios';
+import { precios, fechaLegible, notaBadenes } from '../config/precios';
 import { empresa } from '../config/empresa';
 
 // Todo lo que necesita el navegador para calcular, en un solo objeto.
+// Las observaciones: las fijas de precios.ts más la del badén, que se arma
+// con los valores de ese mismo archivo.
+const notas = [...precios.notasDestacadas, notaBadenes()];
+
 const config = {
   obras: precios.obras,
   adicionales: precios.adicionales,
-  badenes: precios.badenes,
   anchoMediaCalzada: precios.anchoMediaCalzada,
   dolarReferencia: precios.dolarReferencia,
   fuenteDolar: precios.fuenteDolar,
@@ -99,36 +102,6 @@ const config = {
         <div id="obras-lista" class="mt-2 grid gap-3 sm:grid-cols-2"></div>
       </fieldset>
 
-      <!-- Aparece solo si se pidió cordón cuneta -->
-      <fieldset id="grupo-badenes" class="mt-6 rounded-xl bg-asfalto-50 p-5 dark:bg-asfalto-900" hidden>
-        <legend class="px-1 font-semibold">Badenes</legend>
-        <p class="mt-1 text-sm text-asfalto-600 dark:text-asfalto-300">
-          {precios.badenes.detalle}
-        </p>
-        <div id="badenes-lista" class="mt-3 flex flex-wrap gap-3"></div>
-
-        <!-- Para repartir el costo del badén entre los frentistas de la cuadra -->
-        <div id="campo-cuadra" class="mt-4" hidden>
-          <label for="frente-cuadra" class="block text-sm font-semibold">
-            Metros de frente de toda la cuadra
-          </label>
-          <div class="mt-2 flex items-center gap-3">
-            <input
-              id="frente-cuadra"
-              type="number"
-              min="10"
-              max="2000"
-              step="10"
-              value={precios.badenes.frenteCuadraPorDefecto}
-              inputmode="numeric"
-              class="w-28 rounded-lg border border-asfalto-100 px-3 py-2 text-lg font-bold dark:border-white/15 dark:bg-asfalto-800"
-            />
-            <p class="text-sm text-asfalto-600 dark:text-asfalto-300">
-              Sumando las dos veredas. El badén se reparte entre todos los frentistas.
-            </p>
-          </div>
-        </div>
-      </fieldset>
     </form>
 
     <!-- Columna de resultado -->
@@ -161,12 +134,12 @@ const config = {
     </aside>
   </div>
 
-  <!-- Las dos cosas que más pregunta la gente. Se editan en config/precios.ts -->
+  <!-- Lo que más pregunta la gente. Se edita en config/precios.ts -->
   <div
     class="grid gap-6 border-t border-asfalto-100 bg-amarillo/15 px-7 py-6 dark:border-white/10 sm:px-9 md:grid-cols-3"
   >
     {
-      precios.notasDestacadas.map((n) => (
+      notas.map((n) => (
         <div class="flex gap-4">
           <svg
             class="mt-0.5 h-6 w-6 shrink-0 text-amarillo-600 dark:text-amarillo"
@@ -283,40 +256,13 @@ const config = {
       .map((o, i) => opcion('radio', 'obra', o.id, o.nombre, o.detalle, i === 0 ? ' checked' : ''))
       .join('');
 
-    // Badenes: 0, 1 o 2. Van en un grupo de radios porque son pocas opciones y
-    // conviene verlas todas juntas, sin abrir un desplegable.
-    const opcionesBaden = [{ v: 0, t: 'Sin badenes' }];
-    for (let i = 1; i <= config.badenes.maximo; i++) {
-      opcionesBaden.push({ v: i, t: i === 1 ? '1 badén' : i + ' badenes' });
-    }
-    $('badenes-lista').innerHTML = opcionesBaden
-      .map((b) =>
-        '<label class="' +
-        tarjeta +
-        ' items-center"><input type="radio" name="badenes" value="' +
-        b.v +
-        '" class="h-4 w-4 accent-rojo-500"' +
-        (b.v === 0 ? ' checked' : '') +
-        ' /><span class="font-semibold">' +
-        b.t +
-        '</span></label>'
-      )
-      .join('');
-
-    // Muestra u oculta los grupos que dependen de un tilde. Se usa el atributo
+    // El tipo de calzada solo aplica si se pidió pavimento. Se usa el atributo
     // `hidden` y no una clase, para que lo oculto salga del orden de tabulación
     // y del árbol de accesibilidad.
     function sincronizarGrupos() {
-      const marcado = (id) =>
-        !!document.querySelector('input[name="trabajo"][value="' + id + '"]:checked');
-      $('grupo-calzada').hidden = !marcado('pavimento');
-      $('grupo-badenes').hidden = !marcado('cordon');
-
-      // El reparto del badén solo aplica si se pidió alguno.
-      const cant = marcado('cordon')
-        ? parseInt(document.querySelector('input[name="badenes"]:checked')?.value ?? '0', 10)
-        : 0;
-      $('campo-cuadra').hidden = cant === 0;
+      $('grupo-calzada').hidden = !document.querySelector(
+        'input[name="trabajo"][value="pavimento"]:checked'
+      );
     }
 
     // --- Sincronizar la barra con el número ---
@@ -375,10 +321,6 @@ const config = {
 
       const elegidos = config.adicionales.filter((a) => pedido(a.id));
 
-      const cantBadenes = pedido('cordon')
-        ? parseInt(document.querySelector('input[name="badenes"]:checked')?.value ?? '0', 10)
-        : 0;
-
       if (m <= 0) {
         vaciar('Cargá los metros de frente');
         return;
@@ -408,40 +350,6 @@ const config = {
         total += p * m;
         filas.push([ad.nombre + ' · ' + m.toLocaleString('es-AR') + ' m', p * m]);
         lineasWa.push(ad.nombre + ': ' + m.toLocaleString('es-AR') + ' m');
-      }
-
-      // El badén es una obra de la cuadra entera, no del lote. Se prorratea
-      // según los metros de frente del vecino sobre el total de la cuadra.
-      if (cantBadenes > 0) {
-        const b = config.badenes;
-        const costoUno = b.superficiePromedioM2 * b.precioM2 * factor;
-        const costoTotal = costoUno * cantBadenes;
-        const frenteCuadra = Math.max(m, parseFloat($('frente-cuadra').value) || 0);
-        const parte = frenteCuadra > 0 ? costoTotal * (m / frenteCuadra) : 0;
-
-        total += parte;
-        filas.push([
-          b.nombre +
-            ' · ' +
-            cantBadenes +
-            (cantBadenes === 1 ? ' unidad' : ' unidades') +
-            '<span class="mt-0.5 block text-xs opacity-70">tu parte: ' +
-            m.toLocaleString('es-AR') +
-            ' de ' +
-            frenteCuadra.toLocaleString('es-AR') +
-            ' m de cuadra · ' +
-            money.format(redondear(costoTotal)) +
-            ' en total</span>',
-          parte,
-        ]);
-        lineasWa.push(
-          b.nombre +
-            ': ' +
-            cantBadenes +
-            ' (prorrateado sobre ' +
-            frenteCuadra.toLocaleString('es-AR') +
-            ' m de cuadra)'
-        );
       }
 
       total = redondear(total);

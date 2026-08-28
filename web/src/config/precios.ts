@@ -48,6 +48,12 @@ export const precios = {
       detalle: 'Adoquines de hormigón sobre cama de arena, con contención lateral.',
       precioM2: 82000,
     },
+    {
+      id: 'hormigon',
+      nombre: 'Pavimento de hormigón',
+      detalle: 'Calzada de hormigón con la base incluida.',
+      precioM2: 115000,
+    },
   ],
 
   // --- TRABAJOS QUE VAN POR METRO LINEAL DE FRENTE ---
@@ -69,22 +75,17 @@ export const precios = {
   ],
 
   // --- BADENES ---
-  // Solo se ofrecen cuando se hace cordón cuneta, porque van integrados a él.
+  // No entran en la calculadora a propósito: el badén es una obra de la cuadra
+  // entera y su costo se reparte entre todos los frentistas, que pueden ser
+  // muchos o pocos y con frentes muy distintos. Meterlo en la cuenta de un
+  // vecino daría un número que no significa nada.
   //
-  // Ojo con la cuenta: el badén es una obra de la cuadra entera, no del lote.
-  // Por eso el costo se prorratea entre los frentistas según los metros de
-  // frente de cada uno. Cargarle el badén completo a un solo vecino daría un
-  // número disparatado.
+  // En su lugar se publica el valor como observación y cada grupo saca su
+  // propia cuenta. Los valores de acá arman ese texto solo.
   badenes: {
-    nombre: 'Badenes',
-    detalle:
-      'Los define el proyecto hidráulico del municipio: pueden ser 0, 1 o 2 por cuadra. El costo se reparte entre los frentistas.',
     superficiePromedioM2: 70, // superficie promedio de un badén
     precioM2: 95000, // $ por m²  → 70 m² × 95.000 = $6.650.000 cada uno
-    maximo: 2,
-    // Metros de frente que suele tener una cuadra completa, sumando ambas
-    // veredas. Se usa para repartir el costo; el vecino puede corregirlo.
-    frenteCuadraPorDefecto: 200,
+    maximoPorCuadra: 2,
   },
 
   // --- AVISOS DESTACADOS DEBAJO DE LA CALCULADORA ---
@@ -99,11 +100,6 @@ export const precios = {
       titulo: 'Servicios existentes',
       texto:
         'Las conexiones en servicio no se ven afectadas por la obra. Las conexiones nuevas las gestiona el frentista y no están incluidas.',
-    },
-    {
-      titulo: 'Los badenes se reparten',
-      texto:
-        'El badén es una obra de la cuadra entera, no de un lote. Su costo se divide entre todos los frentistas según los metros de frente de cada uno, así que el valor que te toca depende de cuántos vecinos participen y de cuánto frente tenga cada uno. La cantidad —ninguno, uno o dos— la define el proyecto hidráulico del municipio.',
     },
   ],
 
@@ -129,6 +125,33 @@ export function diasDesdeActualizacion(hoy = new Date()): number {
 /** true cuando ya pasó la vigencia y conviene revisar los valores. */
 export function preciosVencidos(hoy = new Date()): boolean {
   return diasDesdeActualizacion(hoy) > precios.vigenciaDias;
+}
+
+/**
+ * Aviso sobre los badenes, armado con los valores de arriba.
+ *
+ * No entra en el cálculo: se muestra como observación para que el grupo de
+ * vecinos sepa con qué número adicional puede encontrarse y lo reparta como
+ * corresponda.
+ */
+export function notaBadenes() {
+  const pesos = (n: number) =>
+    new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      maximumFractionDigits: 0,
+    }).format(n);
+
+  const unidad = precios.badenes.superficiePromedioM2 * precios.badenes.precioM2;
+
+  return {
+    titulo: 'Los badenes van aparte',
+    texto:
+      `Si el proyecto hidráulico del municipio pide badenes, cada uno mide unos ${precios.badenes.superficiePromedioM2} m² ` +
+      `y cuesta alrededor de ${pesos(unidad)}. Por cuadra pueden ir hasta ${precios.badenes.maximoPorCuadra}, ` +
+      `así que el costo de la obra puede subir hasta ${pesos(unidad * precios.badenes.maximoPorCuadra)}. ` +
+      'No está incluido en el cálculo porque es una obra de la cuadra entera: se reparte entre todos los frentistas.',
+  };
 }
 
 /** Fecha del precio base en formato 27/08/2026. */
