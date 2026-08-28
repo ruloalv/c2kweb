@@ -42,10 +42,12 @@ export const empresa = {
       telefono: '02923-407910',
       telefonoLink: '+542923407910',
       celular: '291 506-5034',
-      // Coordenadas de la planta, tomadas de la ficha de Google Maps.
-      lat: -37.611397,
-      lng: -62.429845,
-      mapa: 'https://www.google.com/maps/search/?api=1&query=-37.611397%2C-62.429845',
+      // Coordenadas de la planta, del link de "Compartir" de Google Maps.
+      // Ojo: el @lat,lng que aparece en la barra del navegador es el centro
+      // del encuadre, no el lugar. Ese dato daba 300 m de error.
+      lat: -37.61124,
+      lng: -62.426412,
+      mapa: 'https://www.google.com/maps/search/?api=1&query=-37.61124%2C-62.426412',
     },
   ],
 

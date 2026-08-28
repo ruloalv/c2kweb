@@ -41,6 +41,8 @@ for (const f of [
   'vecinos.md',
   'sitemap-index.xml',
   'og.jpg',
+  'favicon.png',
+  'apple-touch-icon.png',
 ]) {
   check(`existe ${f}`, hay(f));
 }

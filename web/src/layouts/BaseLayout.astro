@@ -147,8 +147,9 @@ const schema = {
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
 
-    <link rel="icon" href={ruta('/favicon.svg')} type="image/svg+xml" />
-    <link rel="apple-touch-icon" href={ruta('/imgs/logo/icono.png')} />
+    <link rel="icon" href={ruta('/favicon.png')} type="image/png" sizes="32x32" />
+    <link rel="icon" href={ruta('/favicon-192.png')} type="image/png" sizes="192x192" />
+    <link rel="apple-touch-icon" href={ruta('/apple-touch-icon.png')} />
 
     <script is:inline>
       // Se aplica el tema antes de pintar, para que no haya un parpadeo blanco.
