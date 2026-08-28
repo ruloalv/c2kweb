@@ -20,6 +20,10 @@ export const GET: APIRoute = ({ site }) => {
   const url = (p: string) => origen + ruta(p);
 
   const anios = new Date().getFullYear() - empresa.anioInicio;
+
+  // Une una lista en castellano: "a, b y c".
+  const enumerar = (xs: string[]) =>
+    xs.length < 2 ? (xs[0] ?? '') : xs.slice(0, -1).join(', ') + ' y ' + xs[xs.length - 1];
   const sedes = empresa.sedes
     .map((s) => `${s.ciudad} (${s.direccion}, tel. ${s.telefono}, cel. ${s.celular})`)
     .join('; ');
@@ -51,8 +55,8 @@ Los frentistas pueden encargar la pavimentación de su cuadra. Datos clave:
 
 - La obra mínima que aprueba el municipio es una cuadra completa y requiere el acuerdo de todos los frentistas. No se pavimenta un lote suelto.
 - Cada frentista paga la media calzada que da a su lote: ${precios.anchoMediaCalzada} metros de ancho por los metros de frente del terreno.
-- Tipos de calzada disponibles: ${precios.obras.map((o) => o.nombre.toLowerCase()).join(' y ')}.
-- Adicionales opcionales: ${precios.adicionales.map((a) => a.nombre.toLowerCase()).join(' y ')}.
+- Tipos de calzada disponibles: ${enumerar(precios.obras.map((o) => o.nombre.toLowerCase()))}.
+- Adicionales opcionales: ${enumerar(precios.adicionales.map((a) => a.nombre.toLowerCase()))}.
 - El expediente municipal y la aprobación de la obra los gestiona la empresa y están incluidos en el precio.
 - Las conexiones de servicios existentes no se ven afectadas. Las conexiones nuevas las gestiona el frentista.
 - La forma de pago y la financiación se acuerdan directamente con la empresa, no con el municipio.
