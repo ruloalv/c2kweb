@@ -14,7 +14,8 @@
     "verifica": "node scripts/verifica-sitio.mjs",
     "postbuild": "node scripts/verifica-sitio.mjs",
     "prueba-worker": "node scripts/prueba-worker.mjs",
-    "genera-favicon": "node scripts/genera-favicon.mjs"
+    "genera-favicon": "node scripts/genera-favicon.mjs",
+    "empaqueta-hosting": "node scripts/empaqueta-hosting.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

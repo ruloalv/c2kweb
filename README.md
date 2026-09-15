@@ -96,6 +96,26 @@ raíz del dominio, que es lo que corresponde acá.
 El deploy de GitHub Pages puede quedar andando en paralelo sin problema. Si se
 quiere apagar, se borra `.github/workflows/deploy.yml`.
 
+## Entregar a un hosting tradicional
+
+Si el sitio se publica en un hosting con cPanel en vez de Cloudflare:
+
+```bash
+cd web && npm run empaqueta-hosting
+```
+
+Deja en `entregas/` un ZIP con la carpeta `public_html/` para subir y un
+`LEEME-DESPLIEGUE.txt` con las instrucciones y los comandos de verificación
+para quien administra el servidor. Se compila siempre para
+`https://www.carreteras2000.com.ar`.
+
+El paquete incluye un `.htaccess` que reproduce en Apache lo que en
+Cloudflare hace el Worker: URLs sin extensión, 404 real y la versión markdown
+para agentes. Sin ese archivo, `/vecinos` da 404.
+
+Cada cambio del sitio, precios incluidos, requiere volver a generar el ZIP y
+reenviarlo.
+
 ## Diseño
 
 [@ruloalv](https://github.com/ruloalv)

@@ -14,6 +14,7 @@ datos: se compila a HTML y se sube a cualquier hosting.
 | `npm run check-precios` | Dice si hay que actualizar los precios de vecinos  |
 | `npm run genera-og`     | Rehace la imagen que se ve al compartir el sitio    |
 | `npm run verifica`      | Revisa el sitio compilado (corre solo tras el build) |
+| `npm run empaqueta-hosting` | Arma el ZIP para subir a un hosting con cPanel |
 
 `npm run dev` y `npm run build` corren solos el chequeo de precios y avisan por
 consola si están vencidos.
