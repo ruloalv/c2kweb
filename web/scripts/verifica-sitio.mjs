@@ -135,6 +135,25 @@ if (hay('llms.txt')) {
   check('llms.txt aclara para qué no sirve', /No es la fuente indicada/i.test(llms));
 }
 
+// --- Los marcadores del bloque de precios ---
+{
+  const cfg = join(dist, '..', 'src', 'config', 'precios.ts');
+  if (existsSync(cfg)) {
+    const c = readFileSync(cfg, 'utf8');
+    check('precios.ts marca el inicio del bloque editable', c.includes('INICIO BLOQUE EDITABLE'));
+    check('precios.ts marca el fin del bloque editable', c.includes('FIN BLOQUE EDITABLE'));
+    // Lo que queda fuera del bloque no se pisa al pegar
+    const fin = c.indexOf('FIN BLOQUE EDITABLE');
+    for (const campo of ['badenes', 'notasDestacadas', 'aclaraciones']) {
+      check(`${campo} queda fuera del bloque editable`, c.indexOf(campo + ':') > fin);
+    }
+    for (const campo of ['fuenteDolar', 'ajustarPorDolar']) {
+      const i = c.indexOf(campo + ':');
+      check(`${campo} queda dentro del bloque editable`, i > 0 && i < fin);
+    }
+  }
+}
+
 // --- El Worker de negociación de contenido ---
 {
   const raizProyecto = join(dist, '..');

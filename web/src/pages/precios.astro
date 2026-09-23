@@ -18,6 +18,8 @@ const actual = {
   dolar: precios.dolarReferencia,
   vigencia: precios.vigenciaDias,
   ancho: precios.anchoMediaCalzada,
+  fuente: precios.fuenteDolar,
+  ajusta: precios.ajustarPorDolar,
   obras: precios.obras.map((o) => ({
     id: o.id,
     nombre: o.nombre,
@@ -281,9 +283,15 @@ const actual = {
     const txt = (s: string) => `'${s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
 
     const bloque = [
+      '  // ===================== INICIO BLOQUE EDITABLE =====================',
       `  fechaActualizacion: ${txt($('fecha').value)},`,
       `  dolarReferencia: ${parseInt($('dolar').value) || 0},`,
       `  vigenciaDias: ${parseInt($('vigencia').value) || 30},`,
+      '',
+      // Estos dos van sí o sí: están en el medio del bloque y si se pierden,
+      // el ajuste por dólar deja de funcionar sin avisar.
+      `  fuenteDolar: ${txt(datos.fuente)} as 'oficial' | 'mayorista' | 'blue' | 'tarjeta',`,
+      `  ajustarPorDolar: ${datos.ajusta},`,
       '',
       `  anchoMediaCalzada: ${ancho},`,
       '',
@@ -314,6 +322,7 @@ const actual = {
         ];
       }),
       '  ],',
+      '  // ====================== FIN BLOQUE EDITABLE =======================',
     ].join('\n');
 
     document.getElementById('salida')!.textContent = bloque;
