@@ -30,8 +30,8 @@ export const precios = {
   //   obras               tipos de calzada, precio por METRO CUADRADO
   //   adicionales         trabajos que van por METRO LINEAL de frente
   // ===================== INICIO BLOQUE EDITABLE =====================
-  fechaActualizacion: '2026-08-27',
-  dolarReferencia: 1535,
+  fechaActualizacion: '2026-09-29',
+  dolarReferencia: 1545,
   vigenciaDias: 30,
 
   fuenteDolar: 'oficial' as 'oficial' | 'mayorista' | 'blue' | 'tarjeta',
