@@ -154,6 +154,27 @@ if (hay('llms.txt')) {
   }
 }
 
+// --- Google Tag Manager ---
+// Lo pidió marketing y es fácil que se pierda en un rediseño del layout.
+{
+  const cfg = join(dist, '..', 'src', 'config', 'empresa.ts');
+  const id = existsSync(cfg)
+    ? readFileSync(cfg, 'utf8').match(/gtmId:\s*'([^']*)'/)?.[1]
+    : null;
+  if (id) {
+    for (const pagina of ['index.html', 'vecinos.html']) {
+      if (!hay(pagina)) continue;
+      const h = leer(pagina);
+      check(`${pagina} carga Google Tag Manager (${id})`, h.includes('gtm.js?id=') && h.includes(id));
+      check(`${pagina} trae el respaldo sin JavaScript de GTM`, h.includes('googletagmanager.com/ns.html'));
+      const cabeza = h.slice(0, h.indexOf('</head>'));
+      check(`${pagina} pone GTM dentro del head`, cabeza.includes('gtm.js?id='));
+    }
+  } else if (existsSync(cfg)) {
+    avisos.push('GTM desactivado: empresa.gtmId está vacío');
+  }
+}
+
 // --- El Worker de negociación de contenido ---
 {
   const raizProyecto = join(dist, '..');

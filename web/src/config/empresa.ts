@@ -25,6 +25,11 @@ export const empresa = {
   // Crédito del sitio, al pie. Se muestra solo el usuario.
   autorSitio: { usuario: '@ruloalv', email: 'ruloalv@gmail.com' },
 
+  // Contenedor de Google Tag Manager, que administra marketing. Desde ahí se
+  // cargan Analytics y las etiquetas de campañas sin tocar el sitio.
+  // Dejarlo vacío desactiva el seguimiento en todo el sitio.
+  gtmId: 'GTM-TRS8F87J',
+
   sedes: [
     {
       ciudad: 'Bahía Blanca',

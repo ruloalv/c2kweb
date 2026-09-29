@@ -16,25 +16,29 @@
 // =====================================================================
 
 export const precios = {
-  // --- ACTUALIZAR ESTOS TRES VALORES ---
-  fechaActualizacion: '2026-08-27', // AAAA-MM-DD del día que cargaste los precios
-  dolarReferencia: 1535,            // dólar BNA billetes VENTA de ese mismo día
-  vigenciaDias: 30,                 // a los cuántos días la web muestra la advertencia
+  // El bloque de abajo lo genera entero la página /precios del sitio: se abre,
+  // se cargan los valores nuevos, se copia y se pega acá reemplazando desde el
+  // marcador INICIO hasta el FIN, marcadores incluidos. Nada de afuera se toca.
+  //
+  //   fechaActualizacion  día en que se cargaron los precios (AAAA-MM-DD)
+  //   dolarReferencia     dólar BNA billetes venta de ese mismo día
+  //   vigenciaDias        a los cuántos días la web muestra la advertencia
+  //   fuenteDolar         'oficial' es el del Banco Nación, el de bna.com.ar
+  //   ajustarPorDolar     en false el precio queda fijo en pesos, sin ajustar
+  //   anchoMediaCalzada   metros de calzada que paga el frentista: con 4, un
+  //                       lote de 10 m de frente paga 40 m²
+  //   obras               tipos de calzada, precio por METRO CUADRADO
+  //   adicionales         trabajos que van por METRO LINEAL de frente
+  // ===================== INICIO BLOQUE EDITABLE =====================
+  fechaActualizacion: '2026-08-27',
+  dolarReferencia: 1535,
+  vigenciaDias: 30,
 
-  // --- CONFIGURACIÓN ---
-  // 'oficial' es el del Banco Nación (billetes, venta), el mismo que figura
-  // en bna.com.ar. Otras opciones: 'mayorista' | 'blue' | 'tarjeta'.
   fuenteDolar: 'oficial' as 'oficial' | 'mayorista' | 'blue' | 'tarjeta',
-  // Poner en false si preferís mostrar el precio fijo en pesos sin ajustar.
   ajustarPorDolar: true,
 
-  // Metros de ancho de calzada que le corresponden al frentista (media calzada).
-  // Con 4 m, un lote de 10 m de frente paga 40 m².
   anchoMediaCalzada: 4,
 
-  // --- TIPOS DE CALZADA ---
-  // El precio va por METRO CUADRADO. La calculadora lo multiplica por el
-  // ancho de media calzada y por los metros de frente del lote.
   obras: [
     {
       id: 'asfalto',
@@ -56,15 +60,12 @@ export const precios = {
     },
   ],
 
-  // --- TRABAJOS QUE VAN POR METRO LINEAL DE FRENTE ---
-  // Se pueden pedir junto con el pavimento o por separado. El cordón cuneta,
-  // por ejemplo, se cotiza solo si la cuadra todavía no lo tiene.
   adicionales: [
     {
       id: 'cordon',
       nombre: 'Cordón cuneta',
       detalle: 'Si la cuadra todavía no tiene. Se puede hacer sin pavimentar.',
-      precioPorMetroFrente: 79000,
+      precioPorMetroFrente: 81500,
     },
     {
       id: 'vereda',
@@ -73,6 +74,7 @@ export const precios = {
       precioPorMetroFrente: 39000,
     },
   ],
+  // ====================== FIN BLOQUE EDITABLE =======================
 
   // --- BADENES ---
   // No entran en la calculadora a propósito: el badén es una obra de la cuadra
