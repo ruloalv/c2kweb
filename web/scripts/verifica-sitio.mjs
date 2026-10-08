@@ -132,6 +132,7 @@ for (const [md, html] of [
 if (hay('vecinos.md')) {
   const v = leer('vecinos.md');
   check('vecinos.md explica el programa municipal', /programa/i.test(v) && /Cámara de la Construcción/.test(v));
+  check('vecinos.md nombra la opción del portal', v.includes('Consorcio Vecinal'));
   check('vecinos.md no publica importes en pesos', !/\$\s?[0-9][0-9.]{3,}/.test(v));
 }
 if (hay('llms.txt')) {
@@ -159,6 +160,8 @@ if (hay('llms.txt')) {
     const v = leer('vecinos.html');
     check('vecinos enlaza la inscripción del Municipio', Boolean(inscripcion) && v.includes(inscripcion));
     check('vecinos nombra a la Cámara de la Construcción', /Cámara de la Construcción/.test(v));
+    // Sin el nombre de la opción, el vecino entra al portal y no la encuentra.
+    check('vecinos nombra la opción del portal', v.includes('Consorcio Vecinal'));
     check('vecinos atiende a los de fuera de Bahía Blanca', /fuera de Bahía Blanca/i.test(v));
     check('vecinos declara el paso a paso como HowTo', v.includes('"HowTo"'));
 

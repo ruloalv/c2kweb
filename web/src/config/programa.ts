@@ -18,6 +18,10 @@ export const programa = {
   // Mi Argentina, así que no se puede ver sin estar logueado.
   inscripcion: 'https://mibahia.gob.ar/asfalto',
 
+  // Cómo se llama la opción adentro del portal. Sin este dato el vecino
+  // entra, no la encuentra y abandona.
+  opcionPortal: 'Consorcio Vecinal',
+
   // WhatsApp de atención del programa, que atiende el Municipio.
   whatsapp: '5492914273947',
   whatsappLegible: '291 427-3947',

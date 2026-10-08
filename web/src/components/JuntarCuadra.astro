@@ -28,19 +28,19 @@ const trabajos = [
         type="text"
         autocomplete="off"
         placeholder="Ej.: Pampa"
-        class="mt-2 w-full rounded-lg border border-asfalto-200 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
+        class="mt-2 w-full rounded-lg border border-asfalto-100 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
       />
     </div>
     <div>
       <label for="jc-entre" class="block text-sm font-semibold">
-        Entre qué calles <span class="font-normal text-asfalto-500">(opcional)</span>
+        Entre qué calles <span class="font-normal text-asfalto-600 dark:text-asfalto-300">(opcional)</span>
       </label>
       <input
         id="jc-entre"
         type="text"
         autocomplete="off"
         placeholder="Ej.: Sarmiento y Rondeau"
-        class="mt-2 w-full rounded-lg border border-asfalto-200 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
+        class="mt-2 w-full rounded-lg border border-asfalto-100 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
       />
     </div>
   </div>
@@ -58,7 +58,7 @@ const trabajos = [
               checked={i === 0}
               class="peer sr-only"
             />
-            <span class="block rounded-lg border border-asfalto-200 px-4 py-2 text-sm font-semibold transition peer-checked:border-rojo-500 peer-checked:bg-rojo-500 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-rojo-500/40 dark:border-white/15">
+            <span class="block rounded-lg border border-asfalto-100 px-4 py-2 text-sm font-semibold transition peer-checked:border-rojo-500 peer-checked:bg-rojo-500 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-rojo-500/40 dark:border-white/15">
               {t.etiqueta}
             </span>
           </label>
@@ -72,7 +72,7 @@ const trabajos = [
     <p
       id="jc-salida"
       aria-live="polite"
-      class="mt-2 whitespace-pre-line rounded-lg bg-asfalto-50 p-4 text-sm leading-relaxed text-asfalto-800 dark:bg-asfalto-900 dark:text-asfalto-200"
+      class="mt-2 whitespace-pre-line rounded-lg bg-asfalto-50 p-4 text-sm leading-relaxed text-asfalto-800 dark:bg-asfalto-900 dark:text-asfalto-300"
     >
     </p>
   </div>
@@ -97,7 +97,7 @@ const trabajos = [
   </div>
 </div>
 
-<script define:vars={{ enlace: programa.inscripcion, tel: programa.whatsappLegible }}>
+<script define:vars={{ enlace: programa.inscripcion, tel: programa.whatsappLegible, opcion: programa.opcionPortal }}>
   const $ = (id) => document.getElementById(id);
   const calle = $('jc-calle');
   const entre = $('jc-entre');
@@ -121,7 +121,8 @@ const trabajos = [
       `con financiación bancaria y supervisión técnica de Obras Públicas.\n\n` +
       `Para que la cuadra entre al programa nos tenemos que anotar TODOS los frentistas. ` +
       `Si falta uno, no arranca.\n\n` +
-      `Se inscribe en ${enlace} (hay que registrarse una vez con DNI, ANSES o Mi Argentina). ` +
+      `Se anota en ${enlace}, en la opción \"${opcion}\". Hay que registrarse ` +
+      `una vez con DNI, ANSES o Mi Argentina.\n\n` +
       `Consultas del programa al WhatsApp ${tel}.\n\n` +
       `¿Nos organizamos?`
     );

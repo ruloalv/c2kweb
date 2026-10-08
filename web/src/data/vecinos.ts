@@ -15,7 +15,7 @@ export const pasos: Paso[] = [
     n: '02',
     titulo: 'Inscribís tu cuadra',
     texto:
-      'Elegís qué necesita la cuadra: pavimento, cordón cuneta o vereda. La inscripción es gratuita y no te obliga a nada.',
+      'Adentro del portal entrás a la opción Consorcio Vecinal y pedís la cuadra: pavimento, cordón cuneta o vereda. Es gratis y no te obliga a nada.',
   },
   {
     n: '03',
@@ -63,6 +63,10 @@ export const preguntas: Pregunta[] = [
   {
     p: '¿Me obliga a algo inscribirme?',
     r: 'No. La inscripción solo manifiesta el interés y sirve para que el Municipio sepa qué cuadras tienen demanda. Recién asumís un compromiso cuando aceptás el presupuesto y la forma de pago.',
+  },
+  {
+    p: '¿Me pueden ayudar con todo esto?',
+    r: 'Sí, y sin compromiso. Te explicamos el programa, te sacamos las dudas y, si tu cuadra se junta, vamos a la reunión y se lo explicamos a todos. No cobramos por eso ni te ata a nada: la obra la asigna la Cámara, no se elige empresa. Escribinos por WhatsApp cuando quieras.',
   },
   {
     p: '¿Qué pasa con las conexiones de agua, gas y cloacas?',

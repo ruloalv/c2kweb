@@ -97,7 +97,7 @@ export function markdownVecinos(
 
 ## Qué es el programa
 
-La ${programa.municipio} abrió la inscripción para que los frentistas de una cuadra resuelvan juntos la obra que les falta: ${programa.trabajos.join(', ')}. El vecino se inscribe en el portal ${programa.portal} (${programa.inscripcion}), que pide registro previo con DNI, ANSES, ARCA o Mi Argentina.
+La ${programa.municipio} abrió la inscripción para que los frentistas de una cuadra resuelvan juntos la obra que les falta: ${programa.trabajos.join(', ')}. El vecino se inscribe en el portal ${programa.portal} (${programa.inscripcion}), en la opción **${programa.opcionPortal}**, que es donde se pide la cuadra. El portal exige registro previo con DNI, ANSES, ARCA o Mi Argentina.
 
 Una vez inscripto el 100% de los frentistas de la cuadra, el Municipio gira el detalle técnico a la Cámara de la Construcción, que elabora el presupuesto. El acuerdo final es entre la Cámara, el vecino y el banco.
 
@@ -126,6 +126,10 @@ El programa rige solo en el partido de Bahía Blanca. En Pigüé y el resto del 
 ## Preguntas frecuentes
 
 ${preguntas.map((f) => `### ${f.p}\n\n${f.r}`).join('\n\n')}
+
+## Acompañamiento de ${empresa.nombre}
+
+La empresa acompaña a los vecinos sin cargo y sin compromiso: explica el programa, va a la reunión de la cuadra si el grupo la organiza, revisa el estado de la calle y el escurrimiento, y avisa qué conexiones de servicios conviene resolver antes del pavimento. No garantiza que ejecute esa cuadra, porque la obra la asigna la Cámara.
 
 ## Contacto
 

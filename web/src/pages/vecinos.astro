@@ -98,9 +98,10 @@ const pasosSchema = {
           Ver cómo funciona
         </a>
       </div>
-      <p class="mt-4 text-sm text-asfalto-400">
-        La inscripción es gratuita, se hace en el portal {programa.portal} del Municipio y no te
-        obliga a nada.
+      <p class="mt-4 max-w-2xl text-sm text-asfalto-300">
+        Se hace en el portal {programa.portal} del Municipio, en la opción{' '}
+        <span class="font-semibold text-amarillo">{programa.opcionPortal}</span>. Es gratis y no
+        te obliga a nada.
       </p>
     </div>
   </section>
@@ -215,7 +216,8 @@ const pasosSchema = {
                 2
               </span>
               <p class="text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
-                Inscribir su domicilio y marcar qué necesita la cuadra.
+                Entrar a la opción <strong class="font-semibold">{programa.opcionPortal}</strong>,
+                cargar su domicilio y marcar qué necesita la cuadra.
               </p>
             </li>
             <li class="flex gap-4">
@@ -232,7 +234,7 @@ const pasosSchema = {
           </ol>
 
           <div
-            class="mt-8 rounded-xl border border-asfalto-200 bg-white p-5 dark:border-white/10 dark:bg-asfalto-800"
+            class="mt-8 rounded-xl border border-asfalto-100 bg-white p-5 dark:border-white/10 dark:bg-asfalto-800"
           >
             <p class="text-sm font-semibold">¿Dudas sobre el programa?</p>
             <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
@@ -252,8 +254,79 @@ const pasosSchema = {
     </div>
   </section>
 
+  <!-- Acompañamiento -->
+  <section class="bg-white py-20 dark:bg-asfalto-950 sm:py-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <TituloSeccion
+        etiqueta="Estamos para ayudarte"
+        titulo="No tenés que arreglártelas solo"
+        bajada="Llevamos más de veinte años haciendo pavimento en la zona. Lo que sabemos está a tu disposición, sin cargo y sin compromiso."
+      />
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          class="revelar rounded-2xl border border-asfalto-100 bg-asfalto-50 p-7 dark:border-white/10 dark:bg-asfalto-900"
+        >
+          <h3 class="font-bold">Te explicamos el programa</h3>
+          <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+            Cómo es la inscripción, qué pasa después y qué podés esperar en cada etapa. Las dudas
+            que tengas, por WhatsApp o por teléfono.
+          </p>
+        </div>
+        <div
+          class="revelar rounded-2xl border border-asfalto-100 bg-asfalto-50 p-7 dark:border-white/10 dark:bg-asfalto-900"
+        >
+          <h3 class="font-bold">Vamos a la reunión de la cuadra</h3>
+          <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+            Si juntás a los vecinos, vamos y se lo explicamos a todos juntos. Suele ser lo que
+            destraba a los que todavía dudan.
+          </p>
+        </div>
+        <div
+          class="revelar rounded-2xl border border-asfalto-100 bg-asfalto-50 p-7 dark:border-white/10 dark:bg-asfalto-900"
+        >
+          <h3 class="font-bold">Miramos tu cuadra</h3>
+          <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+            Cómo escurre el agua, en qué estado está la calle, si conviene cordón cuneta antes
+            que pavimento. Te lo decimos de frente.
+          </p>
+        </div>
+        <div
+          class="revelar rounded-2xl border border-asfalto-100 bg-asfalto-50 p-7 dark:border-white/10 dark:bg-asfalto-900"
+        >
+          <h3 class="font-bold">Te avisamos qué resolver antes</h3>
+          <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+            Conexiones de agua, gas o cloacas que convenga hacer ahora, mientras la calle está
+            abierta. Después hay que romper el pavimento.
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="mt-10 flex flex-col items-start gap-5 rounded-2xl bg-asfalto-50 p-7 dark:bg-asfalto-900 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <p class="max-w-2xl leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+          Nada de esto te compromete con nosotros ni te asegura que hagamos tu cuadra: la obra la
+          asigna la Cámara de la Construcción. Lo hacemos porque cuantas más cuadras se inscriban,
+          más obra hay en la ciudad.
+        </p>
+        <a
+          href={wa(
+            empresa.whatsappPrincipal,
+            'Hola, quiero inscribir mi cuadra en el programa del Municipio y necesito una mano.'
+          )}
+          target="_blank"
+          rel="noopener"
+          class="shrink-0 rounded-lg bg-whatsapp px-7 py-4 font-bold text-asfalto-950 transition hover:brightness-95"
+        >
+          Consultanos por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Fuera de Bahía Blanca -->
-  <section class="bg-white py-16 dark:bg-asfalto-950 sm:py-20">
+  <section class="bg-asfalto-50 py-16 dark:bg-asfalto-900 sm:py-20">
     <div class="mx-auto max-w-3xl px-4 text-center sm:px-6">
       <h2 class="titulo-seccion text-2xl sm:text-3xl">¿Vivís fuera de Bahía Blanca?</h2>
       <p class="mt-4 leading-relaxed text-asfalto-600 dark:text-asfalto-300">
@@ -275,7 +348,7 @@ const pasosSchema = {
   </section>
 
   <!-- Preguntas -->
-  <section class="bg-asfalto-50 py-20 dark:bg-asfalto-900 sm:py-24">
+  <section class="bg-white py-20 dark:bg-asfalto-950 sm:py-24">
     <div class="mx-auto max-w-3xl px-4 sm:px-6">
       <TituloSeccion etiqueta="Dudas frecuentes" titulo="Preguntas de vecinos" centrado />
 
@@ -305,9 +378,8 @@ const pasosSchema = {
     <div class="mx-auto max-w-3xl px-4 text-center sm:px-6">
       <h2 class="titulo-seccion text-3xl sm:text-4xl">Anotá tu cuadra</h2>
       <p class="mt-4 text-lg text-asfalto-300">
-        Cuantas más cuadras se inscriban, más obra se hace en la ciudad. Somos socios de la
-        Cámara de la Construcción y una de las empresas que ejecutan el programa, con plantas
-        propias de asfalto y hormigón en Bahía Blanca y Pigüé.
+        Entrá a {programa.portal}, buscá la opción {programa.opcionPortal} y pedí tu cuadra.
+        Si algo no se entiende, escribinos: te acompañamos en lo que haga falta.
       </p>
       <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
         <a

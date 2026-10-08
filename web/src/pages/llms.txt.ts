@@ -53,7 +53,7 @@ ${empresa.patentes.map((p) => `- **${p.producto}®**: reparador instantáneo de 
 
 Desde 2026 la pavimentación por frentistas en Bahía Blanca se canaliza por el ${programa.nombre} de la ${programa.municipio}. Datos clave:
 
-- El vecino se inscribe en el portal ${programa.portal} (${programa.inscripcion}), que exige registro previo con DNI, ANSES, ARCA o Mi Argentina. No hay versión pública sin login.
+- El vecino se inscribe en el portal ${programa.portal} (${programa.inscripcion}), dentro de la opción **${programa.opcionPortal}**, que es donde se solicita la cuadra. El portal exige registro previo con DNI, ANSES, ARCA o Mi Argentina y no tiene versión pública sin login.
 - Obras que cubre: ${enumerar([...programa.trabajos])}.
 - La cuadra entra al programa recién cuando se inscribe el 100% de los frentistas. No se pavimenta un lote suelto ni media cuadra.
 - Completada la inscripción, el Municipio gira el detalle técnico a la Cámara de la Construcción, que elabora el presupuesto.
@@ -62,6 +62,7 @@ Desde 2026 la pavimentación por frentistas en Bahía Blanca se canaliza por el 
 - El acuerdo final es entre la Cámara de la Construcción, el vecino y el banco. El Municipio aporta la supervisión técnica.
 - La Cámara reparte las cuadras entre las empresas asociadas: el vecino no elige empresa. ${empresa.nombre} es socia de la Cámara de Bahía Blanca y está adherida al programa.
 - Las conexiones de servicios existentes no se ven afectadas. Las conexiones nuevas las gestiona el frentista y conviene resolverlas antes del pavimento.
+- ${empresa.nombre} acompaña a los vecinos sin cargo y sin compromiso: explica el programa, asiste a la reunión de la cuadra, revisa el estado de la calle y avisa qué conexiones conviene resolver antes. No garantiza ejecutar esa cuadra: la asigna la Cámara.
 - Consultas del programa: WhatsApp ${programa.whatsappLegible}.${reunionesVigentes() ? `
 - Reuniones informativas ${programa.reuniones.dias} ${programa.reuniones.horario} en el ${programa.reuniones.lugar} (${programa.reuniones.direccion}), hasta el ${fechaReuniones()}.` : ''}
 
