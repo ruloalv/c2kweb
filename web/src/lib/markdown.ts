@@ -12,14 +12,7 @@ import { empresa } from '../config/empresa';
 import { productos } from '../data/productos';
 import { obras } from '../data/obras';
 import { clientes } from '../data/clientes';
-import { precios, fechaLegible, notaBadenes } from '../config/precios';
-
-const pesos = (n: number) =>
-  new Intl.NumberFormat('es-AR', {
-    style: 'currency',
-    currency: 'ARS',
-    maximumFractionDigits: 0,
-  }).format(n);
+import { programa, reunionesVigentes, fechaReuniones } from '../config/programa';
 
 /** Markdown de la página de inicio. */
 export function markdownInicio(url: (p: string) => string): string {
@@ -84,55 +77,51 @@ Correo: ${empresa.email}
 
 ## Otras páginas
 
-- [Calculadora de pavimento para vecinos](${url('/vecinos')}) · [en markdown](${url('/vecinos.md')})
+- [Pavimento para vecinos: el programa municipal de Bahía Blanca](${url('/vecinos')}) · [en markdown](${url('/vecinos.md')})
 `;
 }
 
-/** Markdown de la página de vecinos, con los precios vigentes. */
+/** Markdown de la página de vecinos, sobre el programa municipal. */
 export function markdownVecinos(
   url: (p: string) => string,
   preguntas: { p: string; r: string }[],
   pasos: { n: string; titulo: string; texto: string }[]
 ): string {
-  const nota = notaBadenes();
+  const reuniones = reunionesVigentes()
+    ? `\n## Reuniones informativas\n\nEl Municipio recibe consultas ${programa.reuniones.dias} ${programa.reuniones.horario}, en el ${programa.reuniones.lugar} (${programa.reuniones.direccion}), hasta el ${fechaReuniones()}.\n`
+    : '';
 
-  return `# Pavimento para vecinos — ${empresa.nombre}
+  return `# Pavimento para vecinos en Bahía Blanca — ${empresa.nombre}
 
-> Cuánto sale pavimentar el frente de tu casa. Estimación por metro de frente sobre media calzada, actualizada con la cotización del dólar del Banco Nación.
+> Cómo inscribir tu cuadra en el ${programa.nombre} de la ${programa.municipio} para hacer el pavimento, el cordón cuneta o la vereda, con financiación bancaria y supervisión técnica del Municipio.
 
-## Cómo se calcula
+## Qué es el programa
 
-Cada frentista paga la media calzada que da a su lote: ${precios.anchoMediaCalzada} metros de ancho por los metros de frente del terreno. Un lote de 10 m de frente son ${10 * precios.anchoMediaCalzada} m².
+La ${programa.municipio} abrió la inscripción para que los frentistas de una cuadra resuelvan juntos la obra que les falta: ${programa.trabajos.join(', ')}. El vecino se inscribe en el portal ${programa.portal} (${programa.inscripcion}), que pide registro previo con DNI, ANSES, ARCA o Mi Argentina.
 
-## Precios de referencia al ${fechaLegible()}
+Una vez inscripto el 100% de los frentistas de la cuadra, el Municipio gira el detalle técnico a la Cámara de la Construcción, que elabora el presupuesto. El acuerdo final es entre la Cámara, el vecino y el banco.
 
-Tipos de calzada, por metro cuadrado:
+Consultas del programa: WhatsApp ${programa.whatsappLegible}.
+${reuniones}
+## Precios
 
-${precios.obras
-  .map(
-    (o) =>
-      `- **${o.nombre}**: ${pesos(o.precioM2)} el m². ${o.detalle} Un frente de 10 m da ${pesos(o.precioM2 * precios.anchoMediaCalzada * 10)}.`
-  )
-  .join('\n')}
+El sitio no publica precios propios para este programa. El valor lo define la Cámara de la Construcción una vez relevada la cuadra, y es el mismo para todas las empresas asociadas. Es un precio consensuado, no una cotización por empresa.
 
-Trabajos que se cobran por metro lineal de frente, y se pueden pedir por separado:
+## Financiación
 
-${precios.adicionales
-  .map((a) => `- **${a.nombre}**: ${pesos(a.precioPorMetroFrente)} el metro. ${a.detalle}`)
-  .join('\n')}
+Hay líneas anunciadas por los bancos ${programa.bancos.join(', ')}, cada una con sus plazos y su calificación crediticia, además de la opción de pago al contado. Las condiciones vigentes las publica el Municipio en ${programa.inscripcion}; cambian seguido, así que no se reproducen acá.
 
-Los valores se guardan en su equivalente en dólares y se reexpresan con la cotización del día, así que el estimado no queda viejo. El dólar de referencia al ${fechaLegible()} fue ${pesos(precios.dolarReferencia)}.
-
-## Importante
-
-${precios.notasDestacadas.map((n) => `- **${n.titulo}**: ${n.texto}`).join('\n')}
-- **${nota.titulo}**: ${nota.texto}
-
-${precios.aclaraciones.map((a) => `- ${a}`).join('\n')}
-
-## Cómo se hace el pavimento de una cuadra
+## Pasos para inscribir una cuadra
 
 ${pasos.map((p) => `${Number(p.n)}. **${p.titulo}** — ${p.texto}`).join('\n')}
+
+## Qué empresa ejecuta la obra
+
+La Cámara de la Construcción reparte las cuadras entre las empresas asociadas; el vecino no elige empresa. ${empresa.nombre} es socia de la Cámara de Bahía Blanca y está adherida al programa.
+
+## Fuera de Bahía Blanca
+
+El programa rige solo en el partido de Bahía Blanca. En Pigüé y el resto del sudoeste bonaerense, ${empresa.nombre} trabaja directo con el grupo de vecinos: hay que consultar por WhatsApp +${empresa.whatsappPrincipal}.
 
 ## Preguntas frecuentes
 
@@ -140,7 +129,7 @@ ${preguntas.map((f) => `### ${f.p}\n\n${f.r}`).join('\n\n')}
 
 ## Contacto
 
-Para un presupuesto formal, WhatsApp +${empresa.whatsappPrincipal} o correo ${empresa.email}.
+WhatsApp +${empresa.whatsappPrincipal} o correo ${empresa.email}.
 
 ## Otras páginas
 

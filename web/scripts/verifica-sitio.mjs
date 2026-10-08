@@ -128,6 +128,16 @@ for (const [md, html] of [
   }
 }
 
+// --- Las versiones en markdown tampoco pueden quedar con precios viejos ---
+if (hay('vecinos.md')) {
+  const v = leer('vecinos.md');
+  check('vecinos.md explica el programa municipal', /programa/i.test(v) && /Cámara de la Construcción/.test(v));
+  check('vecinos.md no publica importes en pesos', !/\$\s?[0-9][0-9.]{3,}/.test(v));
+}
+if (hay('llms.txt')) {
+  check('llms.txt no publica importes en pesos', !/\$\s?[0-9][0-9.]{3,}/.test(leer('llms.txt')));
+}
+
 // --- llms.txt tiene que decirle al agente cuándo usar el sitio ---
 if (hay('llms.txt')) {
   const llms = leer('llms.txt');
@@ -135,22 +145,37 @@ if (hay('llms.txt')) {
   check('llms.txt aclara para qué no sirve', /No es la fuente indicada/i.test(llms));
 }
 
-// --- Los marcadores del bloque de precios ---
+// --- La página de vecinos tiene que hablar del programa, no de precios ---
+// El precio lo fija la Cámara de la Construcción y es igual para todas las
+// empresas. Publicar un valor propio sería un error, no una desactualización.
 {
-  const cfg = join(dist, '..', 'src', 'config', 'precios.ts');
-  if (existsSync(cfg)) {
-    const c = readFileSync(cfg, 'utf8');
-    check('precios.ts marca el inicio del bloque editable', c.includes('INICIO BLOQUE EDITABLE'));
-    check('precios.ts marca el fin del bloque editable', c.includes('FIN BLOQUE EDITABLE'));
-    // Lo que queda fuera del bloque no se pisa al pegar
-    const fin = c.indexOf('FIN BLOQUE EDITABLE');
-    for (const campo of ['badenes', 'notasDestacadas', 'aclaraciones']) {
-      check(`${campo} queda fuera del bloque editable`, c.indexOf(campo + ':') > fin);
-    }
-    for (const campo of ['fuenteDolar', 'ajustarPorDolar']) {
-      const i = c.indexOf(campo + ':');
-      check(`${campo} queda dentro del bloque editable`, i > 0 && i < fin);
-    }
+  const cfg = join(dist, '..', 'src', 'config', 'programa.ts');
+  const inscripcion = existsSync(cfg)
+    ? readFileSync(cfg, 'utf8').match(/inscripcion:\s*'([^']*)'/)?.[1]
+    : null;
+  check('existe la configuración del programa', Boolean(inscripcion));
+
+  if (hay('vecinos.html')) {
+    const v = leer('vecinos.html');
+    check('vecinos enlaza la inscripción del Municipio', Boolean(inscripcion) && v.includes(inscripcion));
+    check('vecinos nombra a la Cámara de la Construcción', /Cámara de la Construcción/.test(v));
+    check('vecinos atiende a los de fuera de Bahía Blanca', /fuera de Bahía Blanca/i.test(v));
+    check('vecinos declara el paso a paso como HowTo', v.includes('"HowTo"'));
+
+    // Nada de precios propios: ni montos en pesos, ni la calculadora vieja.
+    const texto = v
+      .replace(/<script[\s\S]*?<\/script>/g, '')
+      .replace(/<[^>]+>/g, ' ');
+    check(
+      'vecinos no publica importes en pesos',
+      !/\$\s?[0-9][0-9.]{3,}/.test(texto),
+      (texto.match(/\$\s?[0-9][0-9.]{3,}/) || [''])[0]
+    );
+    check('vecinos ya no ofrece la calculadora de precios', !/calculadora/i.test(texto));
+  }
+
+  for (const sobra of ['precios.html', 'precios/index.html']) {
+    check(`ya no se publica ${sobra}`, !hay(sobra));
   }
 }
 

@@ -9,7 +9,7 @@
  *   public_html/           el contenido a subir a la raíz pública del dominio
  *
  * Hay que volver a correrlo y reenviar el ZIP cada vez que cambia algo del
- * sitio, incluidos los precios de la calculadora.
+ * sitio: textos, fotos o datos del programa municipal.
  */
 import { execFileSync, execSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -88,7 +88,7 @@ ErrorDocument 404 /404.html
   # La misma URL puede devolver HTML o markdown según lo que pida el cliente
   Header merge Vary Accept
 
-  # Las páginas se revisan seguido, así un cambio de precios se ve enseguida
+  # Las páginas se revisan seguido, así un cambio de contenido se ve enseguida
   <FilesMatch "\\.(html|md|txt|xml)$">
     Header set Cache-Control "public, max-age=300"
   </FilesMatch>
@@ -163,7 +163,7 @@ Cada comando tiene que devolver el código indicado a la derecha.
   curl -s -o /dev/null -w "%{http_code}" ${SITIO}/llms.txt      -> 200
   curl -s -o /dev/null -w "%{http_code}" ${SITIO}/robots.txt    -> 200
 
-Y este tiene que empezar con "# Pavimento para vecinos":
+Y este tiene que empezar con "# Pavimento para vecinos en Bahía Blanca":
 
   curl -s -H "Accept: text/markdown" ${SITIO}/vecinos
 

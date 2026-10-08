@@ -1,0 +1,153 @@
+---
+// Herramienta para que un vecino arme el mensaje que manda al grupo de la
+// cuadra. Es lo único que hoy no hace nadie: el Municipio inscribe al que
+// llega solo, pero la cuadra no entra al programa hasta que se anotan todos.
+//
+// No tiene datos que se desactualicen: arma un texto y lo copia.
+import { programa } from '../config/programa';
+
+const trabajos = [
+  { id: 'pavimento', etiqueta: 'Pavimento', texto: 'el pavimento' },
+  { id: 'cordon', etiqueta: 'Cordón cuneta', texto: 'el cordón cuneta' },
+  { id: 'vereda', etiqueta: 'Veredas', texto: 'las veredas' },
+];
+---
+
+<div class="rounded-2xl border border-asfalto-100 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-asfalto-800 sm:p-8">
+  <h3 class="text-xl font-bold sm:text-2xl">Armá el mensaje para tu cuadra</h3>
+  <p class="mt-2 text-sm leading-relaxed text-asfalto-600 dark:text-asfalto-300">
+    Completá los datos y copiá el texto al grupo de WhatsApp del barrio. Es el empujón que
+    hace falta para llegar al 100%.
+  </p>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    <div>
+      <label for="jc-calle" class="block text-sm font-semibold">Calle</label>
+      <input
+        id="jc-calle"
+        type="text"
+        autocomplete="off"
+        placeholder="Ej.: Pampa"
+        class="mt-2 w-full rounded-lg border border-asfalto-200 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
+      />
+    </div>
+    <div>
+      <label for="jc-entre" class="block text-sm font-semibold">
+        Entre qué calles <span class="font-normal text-asfalto-500">(opcional)</span>
+      </label>
+      <input
+        id="jc-entre"
+        type="text"
+        autocomplete="off"
+        placeholder="Ej.: Sarmiento y Rondeau"
+        class="mt-2 w-full rounded-lg border border-asfalto-200 bg-white px-4 py-3 text-base outline-none focus:border-rojo-500 focus:ring-2 focus:ring-rojo-500/30 dark:border-white/15 dark:bg-asfalto-900"
+      />
+    </div>
+  </div>
+
+  <fieldset class="mt-5">
+    <legend class="text-sm font-semibold">¿Qué necesita la cuadra?</legend>
+    <div class="mt-3 flex flex-wrap gap-2">
+      {
+        trabajos.map((t, i) => (
+          <label class="cursor-pointer">
+            <input
+              type="radio"
+              name="jc-trabajo"
+              value={t.texto}
+              checked={i === 0}
+              class="peer sr-only"
+            />
+            <span class="block rounded-lg border border-asfalto-200 px-4 py-2 text-sm font-semibold transition peer-checked:border-rojo-500 peer-checked:bg-rojo-500 peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-rojo-500/40 dark:border-white/15">
+              {t.etiqueta}
+            </span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <div class="mt-6">
+    <p class="text-sm font-semibold">Mensaje listo para mandar</p>
+    <p
+      id="jc-salida"
+      aria-live="polite"
+      class="mt-2 whitespace-pre-line rounded-lg bg-asfalto-50 p-4 text-sm leading-relaxed text-asfalto-800 dark:bg-asfalto-900 dark:text-asfalto-200"
+    >
+    </p>
+  </div>
+
+  <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+    <a
+      id="jc-wa"
+      href="https://wa.me/"
+      target="_blank"
+      rel="noopener"
+      class="rounded-lg bg-whatsapp px-6 py-3 text-center font-bold text-asfalto-950 transition hover:brightness-95"
+    >
+      Compartir por WhatsApp
+    </a>
+    <button
+      id="jc-copiar"
+      type="button"
+      class="rounded-lg border border-asfalto-300 px-6 py-3 font-semibold transition hover:bg-asfalto-100 dark:border-white/20 dark:hover:bg-white/10"
+    >
+      Copiar el texto
+    </button>
+  </div>
+</div>
+
+<script define:vars={{ enlace: programa.inscripcion, tel: programa.whatsappLegible }}>
+  const $ = (id) => document.getElementById(id);
+  const calle = $('jc-calle');
+  const entre = $('jc-entre');
+  const salida = $('jc-salida');
+  const boton = $('jc-copiar');
+  const compartir = $('jc-wa');
+  const radios = () => document.querySelectorAll('input[name="jc-trabajo"]');
+
+  function trabajoElegido() {
+    for (const r of radios()) if (r.checked) return r.value;
+    return 'el pavimento';
+  }
+
+  function armar() {
+    const nombre = calle.value.trim();
+    const tramo = entre.value.trim();
+    const donde = nombre ? ` de ${nombre}${tramo ? ` entre ${tramo}` : ''}` : '';
+
+    return (
+      `Vecinos${donde}: el Municipio abrió la inscripción para hacer ${trabajoElegido()} de nuestra cuadra, ` +
+      `con financiación bancaria y supervisión técnica de Obras Públicas.\n\n` +
+      `Para que la cuadra entre al programa nos tenemos que anotar TODOS los frentistas. ` +
+      `Si falta uno, no arranca.\n\n` +
+      `Se inscribe en ${enlace} (hay que registrarse una vez con DNI, ANSES o Mi Argentina). ` +
+      `Consultas del programa al WhatsApp ${tel}.\n\n` +
+      `¿Nos organizamos?`
+    );
+  }
+
+  function refrescar() {
+    const texto = armar();
+    salida.textContent = texto;
+    compartir.href = 'https://wa.me/?text=' + encodeURIComponent(texto);
+  }
+
+  for (const el of [calle, entre]) {
+    el.addEventListener('input', refrescar);
+  }
+  for (const r of radios()) r.addEventListener('change', refrescar);
+
+  boton.addEventListener('click', async () => {
+    const original = boton.textContent;
+    try {
+      await navigator.clipboard.writeText(armar());
+      boton.textContent = 'Copiado';
+    } catch {
+      boton.textContent = 'Seleccionalo y copialo';
+    }
+    setTimeout(() => (boton.textContent = original), 2200);
+  });
+
+  refrescar();
+</script>
